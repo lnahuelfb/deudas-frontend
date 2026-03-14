@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import LoginForm from '../features/auth/components/LoginForm'
+import LoginForm from '@features/auth/components/LoginForm'
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false)
