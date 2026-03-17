@@ -1,20 +1,29 @@
-import { useState } from 'react'
-import LoginForm from '@features/auth/components/LoginForm'
+import { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useSession } from '@/features/auth/hooks/useSession';
+import LoginForm from '@features/auth/components/LoginForm';
 
-function App() {
-  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false)
+function Login() {
+  const navigate = useNavigate();
+  const { data: user, isLoading } = useSession();
 
-  if(isLoggedIn) {
-    window.location.href = "/"
+  useEffect(() => {
+    if (user) navigate("/");
+  }, [user, navigate]);
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-violet-950 text-white">
+        Cargando...
+      </div>
+    );
   }
 
   return (
-    <div className="App h-screen flex items-center justify-center">
-      {isLoggedIn
-        ? <button onClick={() => setIsLoggedIn(prev => !prev)} className='p-2.5 text-[16px] bg-violet-700 text-white border-none cursor-pointer rounded-md hover:bg-gray-200 transition-colors duration-300'>Cerrar sesion</button>
-        : <LoginForm setLoggedIn={setIsLoggedIn} />}
+    <div className="min-h-screen flex items-center justify-center p-4 bg-linear-to-br from-violet-950 to-violet-800 text-white">
+      <LoginForm />
     </div>
-  )
+  );
 }
 
-export default App
+export default Login;

@@ -46,6 +46,12 @@
       ],
       "@pages/*": [
         "src/pages/*"
+      ],
+      "@layouts/*": [
+        "src/layouts/*"
+      ],
+      "@ui/*": [
+        "src/ui/*"
       ]
     }
   },

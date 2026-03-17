@@ -11,8 +11,10 @@ export const login = async (data: LoginFormData) => {
     const res = await fetch("http://localhost:3000/api/auth/login", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(parsed.data)
+      body: JSON.stringify(parsed.data),
+      credentials: "include"
     })
+    console.log("Login response:", res)
     if (!res.ok) throw new Error("Usuario o contraseña incorrectos")
     return res.json()
   } catch (error) {

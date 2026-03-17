@@ -1,86 +1,119 @@
-import { useForm } from "react-hook-form"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { signupSchema } from "../types"
-import type { SignupFormData } from "../types"
-import { useSignup } from "../hooks/useSignup"
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { signupSchema } from "../types";
+import type { SignupFormData } from "../types";
+import { useSignup } from "../hooks/useSignup";
+import { useNavigate, Link } from "react-router-dom";
+import { UserIcon, EnvelopeIcon, LockClosedIcon } from "@heroicons/react/24/outline";
 
-interface SignupFormProps {
-  setLoggedIn: React.Dispatch<React.SetStateAction<boolean>>
-}
-
-const SignupForm = ({ setLoggedIn }: SignupFormProps) => {
-  const inputStyles = "mb-[10px] p-[8px] text-[16px] border-white border-2 rounded-md focus:outline-none focus:border-violet-500"
-
+const SignupForm = () => {
   const { register, handleSubmit, formState: { errors } } =
     useForm<SignupFormData>({
       resolver: zodResolver(signupSchema)
-    })
+    });
 
-  const { doSignup, loading, error } = useSignup()
+  const { doSignup, loading, error } = useSignup();
+  const navigate = useNavigate();
 
   const onSubmit = async (data: SignupFormData) => {
-    const result = await doSignup(data.name, data.email, data.password)
-    if (result) setLoggedIn(true)
-  }
+    const result = await doSignup(data.name, data.email, data.password);
+    if (result) navigate("/");
+  };
+
+  const inputWrapper = "flex items-center bg-white/10 border border-white/20 rounded-lg px-3 py-2 focus-within:border-violet-400 transition";
+  const input = "bg-transparent outline-none text-white w-full text-sm placeholder:text-white/60";
 
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
-      className="flex flex-col w-75 mx-auto bg-violet-700 text-white border p-5 rounded-3xl"
+      className="w-full max-w-sm bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-6 shadow-xl"
     >
-      <h2 className="text-[20px] font-bold mb-4">Registrate:</h2>
+      <h2 className="text-2xl font-bold text-center mb-6">
+        Crear cuenta
+      </h2>
 
-      <input
-        type="text"
-        placeholder="Name"
-        {...register("name")}
-        className={inputStyles}
-      />
-      {errors.name && (
-        <span className="text-red-500 text-[12px]">
-          {errors.name.message}
-        </span>
-      )}
+      {/* Name */}
+      <div className="mb-4">
+        <div className={inputWrapper}>
+          <UserIcon className="h-5 w-5 text-white/70 mr-2" />
+          <input
+            type="text"
+            placeholder="Nombre"
+            {...register("name")}
+            className={input}
+            disabled={loading}
+          />
+        </div>
+        {errors.name && (
+          <span className="text-red-400 text-xs mt-1 block">
+            {errors.name.message}
+          </span>
+        )}
+      </div>
 
-      <input
-        type="text"
-        placeholder="Email"
-        {...register("email")}
-        className={inputStyles}
-      />
-      {errors.email && (
-        <span className="text-red-500 text-[12px]">
-          {errors.email.message}
-        </span>
-      )}
+      {/* Email */}
+      <div className="mb-4">
+        <div className={inputWrapper}>
+          <EnvelopeIcon className="h-5 w-5 text-white/70 mr-2" />
+          <input
+            type="text"
+            placeholder="Email"
+            {...register("email")}
+            className={input}
+            disabled={loading}
+          />
+        </div>
+        {errors.email && (
+          <span className="text-red-400 text-xs mt-1 block">
+            {errors.email.message}
+          </span>
+        )}
+      </div>
 
-      <input
-        type="password"
-        placeholder="Password"
-        {...register("password")}
-        className={inputStyles}
-      />
-      {errors.password && (
-        <span className="text-red-500 text-[12px]">
-          {errors.password.message}
-        </span>
-      )}
+      {/* Password */}
+      <div className="mb-2">
+        <div className={inputWrapper}>
+          <LockClosedIcon className="h-5 w-5 text-white/70 mr-2" />
+          <input
+            type="password"
+            placeholder="Contraseña"
+            {...register("password")}
+            className={input}
+            disabled={loading}
+          />
+        </div>
+        {errors.password && (
+          <span className="text-red-400 text-xs mt-1 block">
+            {errors.password.message}
+          </span>
+        )}
+      </div>
 
+      {/* Error backend */}
       {error && (
-        <span className="text-red-500 text-[12px] mb-2">
+        <div className="text-red-400 text-sm mb-3 text-center">
           {error}
-        </span>
+        </div>
       )}
 
+      {/* Submit */}
       <button
         type="submit"
         disabled={loading}
-        className="p-2.5 text-[16px] bg-[white] text-violet-700 border-none cursor-pointer rounded-md hover:bg-gray-200 transition-colors duration-300 my-1.5"
+        className="w-full py-2 rounded-lg bg-white text-violet-700 font-semibold hover:bg-gray-200 transition disabled:opacity-70 mt-2"
       >
-        {loading ? "Registrando..." : "Registrate"}
+        {loading ? "Registrando..." : "Crear cuenta"}
       </button>
-    </form>
-  )
-}
 
-export default SignupForm
+      {/* Login */}
+      <p className="text-sm text-white/80 text-center mt-4">
+        ¿Ya tenés cuenta?{" "}
+        <Link to="/login" className="text-white font-semibold hover:underline">
+          Iniciar sesión
+        </Link>
+      </p>
+    </form>
+  );
+};
+
+export default SignupForm;
