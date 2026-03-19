@@ -3,6 +3,8 @@ import { AppLayout } from '@layouts/AppLayout'
 
 import Login from '@pages/Login'
 import Register from '@pages/Register'
+import Dashboard from "@/pages/Dashboard"
+import Debt from "@/pages/Debt"
 import App from '@/App'
 
 export const router = createBrowserRouter([
@@ -15,7 +17,7 @@ export const router = createBrowserRouter([
       },
       {
         path: "/dashboard",
-        element: <div>Dashboard</div>
+        element: <Dashboard />
       },
       {
         path: "/profile",
@@ -23,7 +25,7 @@ export const router = createBrowserRouter([
       },
       {
         path: "/debts",
-        element: <div>Deudas</div>
+        element: <Debt />
       }
     ]
   },
