@@ -13,7 +13,9 @@ const Navbar = ({ handleLogout }: NavbarProps) => {
 
   return (
     <header className="bg-violet-700 text-white p-4 flex justify-between items-center">
-      <span className="font-bold text-lg">Deudas</span>
+      <Link className="font-bold text-lg" to="/">
+        Deudas
+      </Link>
 
       <ul className="hidden md:flex space-x-4">
         <li><Link to="/dashboard" className={linkClasses}><HomeIcon className="h-5 w-5 mr-2" />Inicio</Link></li>

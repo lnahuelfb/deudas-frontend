@@ -1,18 +1,29 @@
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useDebt } from '../hooks/useDebt';
 import { cardSchema } from '@/features/debt/types';
 import { XMarkIcon } from '@heroicons/react/24/outline';
 import type { Card } from '@/features/debt/types';
 
 const PRESET_COLORS = ["#7c3aed", "#4c1d95", "#db2777", "#2563eb", "#059669", "#d97706", "#1e293b"];
 
-export const AddCardModal = ({ isOpen, onClose, onSubmit }: any) => {
+export const AddCardModal = ({ isOpen, onClose }: any) => {
   const { register, handleSubmit, setValue, watch, formState: { errors } } = useForm<Card>({
     resolver: zodResolver(cardSchema),
     defaultValues: { color: "#7c3aed", brand: "Visa" }
   });
 
   const selectedColor = watch('color');
+
+  const { addCard, loading, error } = useDebt();
+
+  const onSubmit = async (data: Card) => {
+    const newCard = await addCard(data);
+    if (newCard) {
+      console.log("Nueva tarjeta creada:", newCard);
+      onClose();
+    }
+  };
 
   if (!isOpen) return null;
 
@@ -29,7 +40,7 @@ export const AddCardModal = ({ isOpen, onClose, onSubmit }: any) => {
         </div>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-5 text-[#4c1d95]">
-          <div 
+          <div
             className="w-full h-32 rounded-3xl p-6 flex flex-col justify-between shadow-lg transition-colors duration-500"
             style={{ backgroundColor: selectedColor }}
           >
@@ -39,7 +50,7 @@ export const AddCardModal = ({ isOpen, onClose, onSubmit }: any) => {
 
           <div>
             <label className="text-xs font-bold uppercase ml-2 opacity-60 italic">Nombre</label>
-            <input 
+            <input
               {...register('name')}
               placeholder="Ej: Visa Santander"
               className="w-full p-4 mt-1 rounded-2xl bg-gray-50 border-2 border-transparent focus:border-[#7c3aed] outline-none"
@@ -50,8 +61,8 @@ export const AddCardModal = ({ isOpen, onClose, onSubmit }: any) => {
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label className="text-xs font-bold uppercase ml-2 opacity-60 italic">Cierra el día</label>
-              <input 
-                type="number" 
+              <input
+                type="number"
                 {...register('closingDay', { valueAsNumber: true })}
                 placeholder="Ej: 25"
                 className="w-full p-4 mt-1 rounded-2xl bg-gray-50 border-2 border-transparent focus:border-[#7c3aed] outline-none"
@@ -59,8 +70,8 @@ export const AddCardModal = ({ isOpen, onClose, onSubmit }: any) => {
             </div>
             <div>
               <label className="text-xs font-bold uppercase ml-2 opacity-60 italic">Vence el día</label>
-              <input 
-                type="number" 
+              <input
+                type="number"
                 {...register('dueDay', { valueAsNumber: true })}
                 placeholder="Ej: 5"
                 className="w-full p-4 mt-1 rounded-2xl bg-gray-50 border-2 border-transparent focus:border-[#7c3aed] outline-none"
@@ -84,7 +95,7 @@ export const AddCardModal = ({ isOpen, onClose, onSubmit }: any) => {
             </div>
           </div>
 
-          <button 
+          <button
             type="submit"
             className="w-full bg-[#4c1d95] text-white font-black p-5 rounded-3xl mt-4 hover:bg-[#7c3aed] shadow-xl shadow-violet-200 transition-all active:scale-95"
             onClick={() => {

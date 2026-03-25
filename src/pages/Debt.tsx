@@ -10,67 +10,88 @@ const DebtsPage = () => {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [selectedCard, setSelectedCard] = useState<CardWithSummary | null>(null);
 
-  const { data: cards } : { data: CardWithSummary[] } = { data: [
-    { id: "card_1",
-      name: "Visa Santander",
-      brand: "Visa",
-      color: "#7c3aed",
-      closingDay: 25,
-      dueDay: 10,
-      monthlyTotal: 23500,
-      isCreditCard: true
-    },
+  const { data: cards }: { data: CardWithSummary[] } = {
+    data: [
+      {
+        id: "card_1",
+        name: "Visa Santander",
+        brand: "Visa",
+        color: "#7c3aed",
+        closingDay: 25,
+        dueDay: 10,
+        monthlyTotal: 23500,
+        isCreditCard: true
+      },
 
-    { id: "card_2",
-      name: "Naranja",
-      brand: "Naranja",
-      color: "#db2777",
-      monthlyTotal: 12000,
-      isCreditCard: false
-    },
+      {
+        id: "card_2",
+        name: "Naranja",
+        brand: "Naranja",
+        color: "#db2777",
+        monthlyTotal: 12000,
+        isCreditCard: false
+      },
 
-    { id: "card_3",
-      name: "Deuda Personal",
-      color: "#059669",
-      monthlyTotal: 5000,
-      isCreditCard: false
-    }
-  ] }; // Mock
+      {
+        id: "card_3",
+        name: "Deuda Personal",
+        color: "#059669",
+        monthlyTotal: 5000,
+        isCreditCard: false
+      }
+    ]
+  }; // Mock
 
   return (
     <div className="min-h-screen p-6 pb-24">
-      {/* Listado de Tarjetas */}
-      {cards.map(card => (
-        <DebtCard 
-          key={card.id} 
-          card={card} 
-          onClick={() => setSelectedCard(card)} // Al clickear, seteamos la tarjeta y se abre el detalle
-        />
-      ))}
+      <header className="mb-10 pt-6 max-w-7xl mx-auto px-2">
+        <h1 className="text-4xl font-black text-white italic tracking-tight">Mis Deudas</h1>
+        <p className="text-violet-200 opacity-70 font-semibold mt-1">Gestioná tus tarjetas y cuotas</p>
+      </header>
 
-      {/* Botón flotante para CREAR tarjeta nueva */}
-      <button 
+      <main className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
+        {/* Listado de Tarjetas */}
+        {cards.map((card) => (
+          <DebtCard
+            key={card.id}
+            card={card}
+            onClick={() => setSelectedCard(card)}
+          />
+        ))}
+
+        {/* Botón de Nueva Tarjeta integrado al Grid para pantallas grandes */}
+        <button
+          onClick={() => setIsAddModalOpen(true)}
+          className="group w-full min-h-50 border-2 border-dashed border-white/20 rounded-[2.5rem] flex flex-col items-center justify-center text-white/40 hover:text-white hover:border-white/40 transition-all bg-white/5 hover:bg-white/10 shadow-sm"
+        >
+          <div className="p-4 bg-white/5 rounded-full mb-3 group-hover:bg-white/10 group-hover:scale-110 transition-all duration-300">
+            <PlusIcon className="w-8 h-8 stroke-3" />
+          </div>
+          <span className="font-black text-sm uppercase tracking-widest opacity-60">Nueva Tarjeta</span>
+        </button>
+      </main>
+
+      {/* Botón flotante para CREAR tarjeta (Visible solo en mobile) */}
+      <button
         onClick={() => setIsAddModalOpen(true)}
-        className="fixed bottom-8 right-6 bg-white text-[#4c1d95] p-4 rounded-3xl shadow-2xl z-50"
+        className="md:hidden fixed bottom-8 right-6 bg-white text-[#4c1d95] p-5 rounded-4xl shadow-2xl z-50 active:scale-90 transition-transform"
       >
-        <PlusIcon className="w-8 h-8" />
+        <PlusIcon className="w-8 h-8 stroke-3" />
       </button>
 
-      {/* 1. Modal para CREAR (El formulario de colores) */}
-      <AddCardModal 
-        isOpen={isAddModalOpen} 
-        onClose={() => setIsAddModalOpen(false)} 
-        onSubmit={(data: any) => {
-          console.log("Creando tarjeta...", data);
+      <AddCardModal
+        isOpen={isAddModalOpen}
+        onClose={() => setIsAddModalOpen(false)}
+        onSubmit={(data: Card) => {
+          console.log("Nueva tarjeta creada:", data);
           setIsAddModalOpen(false);
         }}
       />
 
-      {/* 2. El Drawer para VER DETALLES (Lo que elegiste en vez de página) */}
-      <CardDetailDrawer 
-        card={selectedCard} 
-        isOpen={!!selectedCard} 
-        onClose={() => setSelectedCard(null)} 
+      <CardDetailDrawer
+        card={selectedCard}
+        isOpen={!!selectedCard}
+        onClose={() => setSelectedCard(null)}
       />
     </div>
   );
