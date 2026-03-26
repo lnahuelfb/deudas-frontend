@@ -1,4 +1,4 @@
-import DebtCard from "./DebtCard"
+import { DebtCard } from "./DebtCard"
 
 const debts = [
   { id: 1, name: "Motel Pago", amount: 5000, status: "pending" },

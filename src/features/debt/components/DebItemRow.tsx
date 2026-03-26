@@ -21,7 +21,7 @@ export const DebtItemRow = ({ debt }: DebtItemRowProps) => {
   };
 
   return (
-    <div className="flex items-center gap-4 p-5 bg-white/5 backdrop-blur-md rounded-[2rem] border border-white/5 hover:bg-white/10 transition-all cursor-pointer group">
+    <div className="flex items-center gap-4 p-5 bg-white/5 backdrop-blur-md rounded-4xl border border-white/5 hover:bg-white/10 transition-all cursor-pointer group">
       {/* Icono contenedor */}
       <div className="p-3 bg-white/10 rounded-2xl group-hover:scale-110 transition-transform">
         {getIcon()}

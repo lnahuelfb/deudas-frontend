@@ -1,24 +1,51 @@
-import {useState} from "react"
-import { createCard } from "../api/card.api";
-import { type Card } from "../types";
+import { useEffect, useState } from "react"
+import { createDebt, fetchDebts } from "../api/debt.api";
+import type { Debt } from "../types";
 
-export const useDebt = () => {
+export const useDebt = (cardId?: string) => {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [debts, setDebts] = useState<Debt[]>([])
 
-  const addCard = async (data: Omit<Card, "id">) => {
+  const loadDebts = async (cardId?: string) => {
     setLoading(true)
     setError(null)
     try {
-      const newCard = await createCard(data)
+      const data: Debt[] = await fetchDebts(cardId)
+      setDebts(data || [])
+    } catch (err: any) {
+      setError(err.message || "Error desconocido")
+    } finally {
       setLoading(false)
-      return newCard
+    }
+  }
+
+  useEffect(() => {
+    loadDebts(cardId)
+  }, [cardId])
+
+  return { loading, error, debts, loadDebts }
+}
+
+
+export const useAddDebt = (data: Omit<Debt, "id">) => {
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+
+  const addDebt = async () => {
+    setLoading(true)
+    setError(null)
+    try {
+      const newDebt = await createDebt(data)
+      setLoading(false)
+      return newDebt
     } catch (err: any) {
       setError(err.message || "Error desconocido")
       setLoading(false)
       return null
     }
+
   }
 
-  return { addCard, loading, error }
+  return { addDebt, loading, error }
 }

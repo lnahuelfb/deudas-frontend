@@ -1,46 +1,33 @@
-// src/pages/DebtsPage.tsx
 import { useState } from 'react';
 import { DebtCard } from '@/features/debt/components/DebtCard';
 import { AddCardModal } from '@/features/debt/components/AddCardModal';
+import { useCards } from '@/features/debt/hooks/useCards';
 import { CardDetailDrawer } from '@/features/debt/components/CardDetailDrawler';
 import type { CardWithSummary, Card } from '@/features/debt/types';
 import PlusIcon from '@heroicons/react/24/outline/PlusIcon';
+
 
 const DebtsPage = () => {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [selectedCard, setSelectedCard] = useState<CardWithSummary | null>(null);
 
-  const { data: cards }: { data: CardWithSummary[] } = {
-    data: [
-      {
-        id: "card_1",
-        name: "Visa Santander",
-        brand: "Visa",
-        color: "#7c3aed",
-        closingDay: 25,
-        dueDay: 10,
-        monthlyTotal: 23500,
-        isCreditCard: true
-      },
+  const {cards, loading, error} = useCards() as unknown as { cards: CardWithSummary[], loading: boolean, error: string | null }
 
-      {
-        id: "card_2",
-        name: "Naranja",
-        brand: "Naranja",
-        color: "#db2777",
-        monthlyTotal: 12000,
-        isCreditCard: false
-      },
+  if(error) {
+    return (
+      <div className="min-h-screen p-6 pb-24">
+        <div className="max-w-7xl mx-auto">
+          <h1 className="text-4xl font-black text-white italic tracking-tight">Mis Deudas</h1>
+          <p className="text-violet-200 opacity-70 font-semibold mt-1">Gestioná tus tarjetas y cuotas</p>
+          <div className="mt-10 p-4 bg-red-100 text-red-700 rounded-lg">
+            <p className="font-bold">Error al cargar las tarjetas:</p>
+            <p>{error}</p>
+          </div>
+        </div>
+      </div>
+    )
+  }
 
-      {
-        id: "card_3",
-        name: "Deuda Personal",
-        color: "#059669",
-        monthlyTotal: 5000,
-        isCreditCard: false
-      }
-    ]
-  }; // Mock
 
   return (
     <div className="min-h-screen p-6 pb-24">
@@ -51,13 +38,15 @@ const DebtsPage = () => {
 
       <main className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
         {/* Listado de Tarjetas */}
-        {cards.map((card) => (
-          <DebtCard
-            key={card.id}
-            card={card}
-            onClick={() => setSelectedCard(card)}
-          />
-        ))}
+        {!loading && cards.map((card: CardWithSummary) => {
+          return (
+            <DebtCard
+              key={card.id}
+              card={card}
+              onClick={() => setSelectedCard(card)}
+            />
+          )
+        })}
 
         {/* Botón de Nueva Tarjeta integrado al Grid para pantallas grandes */}
         <button

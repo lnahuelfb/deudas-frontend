@@ -1,6 +1,6 @@
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useDebt } from '../hooks/useDebt';
+import { useAddCard } from '../hooks/useCards';
 import { cardSchema } from '@/features/debt/types';
 import { XMarkIcon } from '@heroicons/react/24/outline';
 import type { Card } from '@/features/debt/types';
@@ -15,13 +15,17 @@ export const AddCardModal = ({ isOpen, onClose }: any) => {
 
   const selectedColor = watch('color');
 
-  const { addCard, loading, error } = useDebt();
+  const { addCard, loading, error } = useAddCard();
 
   const onSubmit = async (data: Card) => {
-    const newCard = await addCard(data);
-    if (newCard) {
-      console.log("Nueva tarjeta creada:", newCard);
-      onClose();
+    try{
+      const newCard = await addCard(data);
+      if (newCard) {
+        console.log("Nueva tarjeta creada:", newCard);
+        onClose();
+      }
+    } catch (err) {
+      console.error("Error al crear la tarjeta:", err);
     }
   };
 
@@ -95,16 +99,36 @@ export const AddCardModal = ({ isOpen, onClose }: any) => {
             </div>
           </div>
 
-          <button
-            type="submit"
-            className="w-full bg-[#4c1d95] text-white font-black p-5 rounded-3xl mt-4 hover:bg-[#7c3aed] shadow-xl shadow-violet-200 transition-all active:scale-95"
-            onClick={() => {
-              const currentValues = watch();
-              onSubmit(currentValues);
-            }}
-          >
-            Crear Tarjeta
-          </button>
+          {error && <p className="text-red-500 text-[10px] mt-1 ml-2 font-bold">{error}</p>}
+
+
+          {loading
+            ? (
+              <button
+                disabled
+                type="submit"
+                className="w-full bg-[#4c1d95] text-white font-black p-5 rounded-3xl mt-4 hover:bg-[#7c3aed] shadow-xl shadow-violet-200 transition-all active:scale-95"
+                onClick={() => {
+                  const currentValues = watch();
+                  onSubmit(currentValues);
+                }}
+              >
+                Crear Tarjeta
+              </button>
+            )
+            : (
+              <button
+                type="submit"
+                className="w-full bg-[#4c1d95] text-white font-black p-5 rounded-3xl mt-4 hover:bg-[#7c3aed] shadow-xl shadow-violet-200 transition-all active:scale-95"
+                onClick={() => {
+                  const currentValues = watch();
+                  onSubmit(currentValues);
+                }}
+              >
+                Crear Tarjeta
+              </button>
+            )}
+
         </form>
       </div>
     </div>
