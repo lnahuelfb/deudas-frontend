@@ -1,51 +1,103 @@
-import { useEffect, useState } from "react"
-import { createDebt, fetchDebts } from "../api/debt.api";
+import { useEffect, useState, useCallback } from "react"
+import { createDebt, fetchDebts, updateDebt, deleteDebt } from "../api/debt.api";
 import type { Debt } from "../types";
 
 export const useDebt = (cardId?: string) => {
+  const [loading, setLoading] = useState(false);
+  const [debts, setDebts] = useState<Debt[]>([]);
+  const [error, setError] = useState<string | null>(null);
+
+  const loadDebts = useCallback(async () => {
+    if (!cardId) return;
+
+    setLoading(true);
+    setError(null);
+    try {
+      const data = await fetchDebts(cardId);
+      setDebts(data || []);
+    } catch (err) {
+      console.error(err);
+      setError("Error al cargar las deudas" + (err instanceof Error ? `: ${err.message}` : ""));
+    } finally {
+      setLoading(false);
+    }
+  }, [cardId]);
+
+  useEffect(() => {
+    if (cardId) {
+      loadDebts();
+    } else {
+      setDebts([]);
+    }
+  }, [cardId, loadDebts]);
+
+  return { debts, loading, error, fetchUserDebts: loadDebts };
+};
+
+export const useAddDebt = () => {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  const [debts, setDebts] = useState<Debt[]>([])
 
-  const loadDebts = async (cardId?: string) => {
+  const addDebt = async (data: Omit<Debt, "id" | "createdAt" | "updatedAt">) => {
+    console.log("Agregando deuda con data:", data);
     setLoading(true)
     setError(null)
     try {
-      const data: Debt[] = await fetchDebts(cardId)
-      setDebts(data || [])
+      const newDebt = await createDebt(data)
+      return newDebt
     } catch (err: any) {
-      setError(err.message || "Error desconocido")
+      const msg = err.message || "Error al crear la deuda"
+      setError(msg)
+      throw new Error(msg)
     } finally {
       setLoading(false)
     }
   }
 
-  useEffect(() => {
-    loadDebts(cardId)
-  }, [cardId])
-
-  return { loading, error, debts, loadDebts }
+  return { addDebt, loading, error }
 }
 
-
-export const useAddDebt = (data: Omit<Debt, "id">) => {
+export const useDeleteDebt = () => {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
-  const addDebt = async () => {
+  const deleteDebtData = async (debtId: string) => {
     setLoading(true)
     setError(null)
     try {
-      const newDebt = await createDebt(data)
-      setLoading(false)
-      return newDebt
+      const response = await deleteDebt(debtId)
+      return response
     } catch (err: any) {
-      setError(err.message || "Error desconocido")
+      const msg = err.message || "Error al eliminar la deuda"
+      setError(msg)
+      throw new Error(msg)
+    } finally {
       setLoading(false)
-      return null
     }
-
   }
 
-  return { addDebt, loading, error }
+  return { deleteDebt: deleteDebtData, loading, error }
 }
+
+export const useUpdateDebt = () => {
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+
+  const updateDebtData = async (debtId: string, data: Partial<Omit<Debt, "id" | "createdAt" | "updatedAt">>) => {
+    setLoading(true)
+    setError(null)
+    try {
+      const updatedDebt = await updateDebt(debtId, data)
+      return updatedDebt
+    } catch (err: any) {
+      const msg = err.message || "Error al actualizar la deuda"
+      setError(msg)
+      throw new Error(msg)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  return { updateDebt: updateDebtData, loading, error }
+}
+

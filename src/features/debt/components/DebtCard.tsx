@@ -4,11 +4,24 @@ import type { CardWithSummary } from '../types';
 interface DebtCardProps {
   card: CardWithSummary;
   onClick: () => void;
+  loading: boolean;
 }
 
-export const DebtCard = ({ card, onClick }: DebtCardProps) => {
-return (
-    <div 
+export const DebtCard = ({ card, onClick, loading }: DebtCardProps) => {
+  
+  if (loading) {
+    return (
+      <div className="animate-pulse bg-white/5 rounded-[2.5rem] p-6 min-h-55">
+        <div className="h-6 bg-white/10 rounded w-1/3 mb-4" />
+        <div className="h-10 bg-white/10 rounded w-1/2 mb-6" />
+        <div className="h-6 bg-white/10 rounded w-1/4 mb-2" />
+        <div className="h-8 bg-white/10 rounded w-1/3" />
+      </div>
+    );
+  }
+
+  return (
+    <div
       onClick={onClick}
       className="group relative w-full p-6 rounded-[2.5rem] shadow-xl text-white overflow-hidden cursor-pointer transition-all active:scale-[0.98] mb-4 hover:brightness-110 flex flex-col justify-between min-h-[220px]"
       style={{ backgroundColor: card.color }}
@@ -30,7 +43,7 @@ return (
       </div>
 
       <div className="relative z-10">
-        
+
         <div className="h-10 flex items-center mb-1">
           {card.isCreditCard && card.closingDay ? (
             <div className="flex items-center gap-1.5 text-[10px] font-bold opacity-90 bg-black/10 w-fit px-3 py-1 rounded-full border border-white/5">
@@ -51,7 +64,7 @@ return (
               ${card.totalToPayThisMonth.toLocaleString('es-AR', { minimumFractionDigits: 2 })}
             </p>
           </div>
-          
+
           <span className="flex items-center gap-2 bg-white text-black font-bold px-5 py-2.5 rounded-2xl shadow-lg group-hover:shadow-white/20 transition-all text-xs">
             Ver detalle
             <ChevronRightIcon className="w-3 h-3 stroke-3" />

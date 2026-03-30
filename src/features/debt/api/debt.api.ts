@@ -46,3 +46,45 @@ export const fetchDebts = async (cardId?: string): Promise<Debt[]> => {
     throw new Error("Error al obtener las deudas");
   }
 }
+
+export const deleteDebt = async (debtId: string) => {
+  try {
+    const response = await fetch(`http://localhost:3000/api/debts/${debtId}`, {
+      method: "DELETE",
+      credentials: "include"
+    });
+
+    if (!response.ok) {
+      const errorData = response.status !== 204 ? await response.json() : {};
+      throw new Error(errorData.message || "Error al eliminar la deuda");
+    }
+
+    if (response.status === 204) return true;
+    
+    return response.json();
+  } catch (error) {
+    console.error("Error deleting debt:", error);
+    throw error; // Re-lanzamos el error original para que el hook lo vea
+  }
+}
+
+export const updateDebt = async (debtId: string, data: Partial<Omit<Debt, "id">>) => {
+  try {
+    const response = await fetch(`http://localhost:3000/api/debts/${debtId}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data),
+      credentials: "include"
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.message || "Error al actualizar la deuda");
+    }
+
+    return response.json();
+  } catch (error) {
+    console.error("Error updating debt:", error);
+    throw new Error("Error al actualizar la deuda");
+  }
+}

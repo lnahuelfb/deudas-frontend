@@ -17,6 +17,7 @@ export interface CardWithSummary extends Card {
 }
 
 export const debtSchema = z.object({
+  id: z.string().cuid().optional(),
   title: z.string().min(1, "El título es obligatorio"),
   amountPerMonth: z.number().min(0, "El monto mensual debe ser positivo"),
   totalAmount: z.number().min(0, "El monto total debe ser positivo").optional(),
@@ -24,6 +25,8 @@ export const debtSchema = z.object({
   totalInstallments: z.number().min(1).optional(),
   currentInstallment: z.number().min(1).optional(),
   category: z.string().optional(),
+  accountId: z.string().cuid(),
+  initialPaidInstallments: z.number().min(0).optional(),
 });
 
 export type Debt = z.infer<typeof debtSchema>;

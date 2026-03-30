@@ -28,7 +28,6 @@ const DebtsPage = () => {
     )
   }
 
-
   return (
     <div className="min-h-screen p-6 pb-24">
       <header className="mb-10 pt-6 max-w-7xl mx-auto px-2">
@@ -43,10 +42,12 @@ const DebtsPage = () => {
             <DebtCard
               key={card.id}
               card={card}
+              loading={loading}
               onClick={() => setSelectedCard(card)}
             />
           )
         })}
+
 
         {/* Botón de Nueva Tarjeta integrado al Grid para pantallas grandes */}
         <button
