@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form';
 import { useAddDebt } from '../hooks/useDebt';
 import { XMarkIcon, PlusIcon, TrashIcon, CheckIcon, PencilIcon } from '@heroicons/react/24/outline';
 
-export const AddDebtModal = ({ isOpen, onClose, accountId, onSuccess }: any) => {
+export const AddDebtModal = ({ isOpen, onClose, card, onSuccess }: any) => {
   const { addDebt, loading } = useAddDebt();
   const [tempDebts, setTempDebts] = useState<any[]>([]);
 
@@ -18,7 +18,6 @@ export const AddDebtModal = ({ isOpen, onClose, accountId, onSuccess }: any) => 
       amountPerMonth: '',
     }
   });
-
 
   const [editingId, setEditingId] = useState<number | null>(null);
 
@@ -62,7 +61,7 @@ export const AddDebtModal = ({ isOpen, onClose, accountId, onSuccess }: any) => 
     try {
       await Promise.all(tempDebts.map(debt => addDebt({
         ...debt,
-        accountId,
+        accountId: card.id,
         totalAmount: parseFloat(debt.totalAmount),
         amountPerMonth: parseFloat(debt.amountPerMonth),
         totalInstallments: parseInt(debt.totalInstallments),
@@ -70,9 +69,10 @@ export const AddDebtModal = ({ isOpen, onClose, accountId, onSuccess }: any) => 
       })));
 
       setTempDebts([]);
+
       onSuccess();
     } catch (e) {
-      console.error("Error al subir deudas");
+      console.error("Error al subir deudas", { error: e });
     }
   };
 
@@ -101,23 +101,14 @@ export const AddDebtModal = ({ isOpen, onClose, accountId, onSuccess }: any) => 
                 <label className="text-[10px] font-black text-violet-300 uppercase ml-2">¿Qué compraste?</label>
                 <input {...register("title")} placeholder="Ej: Zapatillas" className="w-full bg-white/5 border-none p-4 rounded-2xl text-white placeholder:text-white/20 focus:ring-2 focus:ring-violet-500" />
               </div>
-              <div className="space-y-1">
-                <label className="text-[10px] font-black text-violet-300 uppercase ml-2">Categoría</label>
-                <select {...register("category")} className="w-full bg-white/5 border-none p-4 rounded-2xl text-white focus:ring-2 focus:ring-violet-500">
-                  <option value="Ropa">Ropa</option>
-                  <option value="Supermercado">Supermercado</option>
-                  <option value="Tecnología">Tecnología</option>
-                  <option value="Suscripción">Suscripción</option>
-                  <option value="Varios">Varios</option>
-                </select>
-              </div>
-            </div>
 
-            <div className="grid grid-cols-3 gap-4">
+
+
               <div className="space-y-1">
-                <label className="text-[10px] font-black text-violet-300 uppercase ml-2">Total $</label>
+                <label className="text-[10px] font-black text-violet-300 uppercase ml-2 ">Total $</label>
                 <input {...register("totalAmount")} onBlur={calculateMonthly} type="number" className="w-full bg-white/5 border-none p-4 rounded-2xl text-white" />
               </div>
+
               {!isSubscription && (
                 <>
                   <div className="space-y-1">
@@ -125,12 +116,28 @@ export const AddDebtModal = ({ isOpen, onClose, accountId, onSuccess }: any) => 
                     <input {...register("totalInstallments")} onBlur={calculateMonthly} type="number" className="w-full bg-white/5 border-none p-4 rounded-2xl text-white" />
                   </div>
                   <div className="space-y-1">
-                    <label className="text-[10px] font-black text-violet-300 uppercase ml-2">Ya pagas</label>
+                    <label className="text-[10px] font-black text-violet-300 uppercase ml-2">Ya pagaste</label>
                     <input {...register("initialPaidInstallments")} type="number" className="w-full bg-white/5 border-none p-4 rounded-2xl text-white" />
                   </div>
                 </>
               )}
             </div>
+
+
+            {
+              !isSubscription && (
+                <div className="space-y-1">
+                  <label className="text-[10px] font-black text-violet-300 uppercase ml-2">Categoría</label>
+                  <select {...register("category")} className="w-full bg-white/5 border-none p-4 rounded-2xl text-white focus:ring-2 focus:ring-violet-500">
+                    <option value="Ropa">Ropa</option>
+                    <option value="Supermercado">Supermercado</option>
+                    <option value="Tecnología">Tecnología</option>
+                    <option value="Suscripción">Suscripción</option>
+                    <option value="Varios">Varios</option>
+                  </select>
+                </div>
+              )
+            }
 
             <div className="flex items-center justify-between pt-2">
               <label className="flex items-center gap-3 cursor-pointer group">

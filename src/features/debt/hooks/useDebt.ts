@@ -38,8 +38,12 @@ export const useAddDebt = () => {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
-  const addDebt = async (data: Omit<Debt, "id" | "createdAt" | "updatedAt">) => {
-    console.log("Agregando deuda con data:", data);
+  const addDebt = async (data: Debt) => {
+
+    if (data.id) {
+      delete data.id
+    }
+
     setLoading(true)
     setError(null)
     try {
@@ -47,6 +51,7 @@ export const useAddDebt = () => {
       return newDebt
     } catch (err: any) {
       const msg = err.message || "Error al crear la deuda"
+      console.log(err)
       setError(msg)
       throw new Error(msg)
     } finally {

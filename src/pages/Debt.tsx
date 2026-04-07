@@ -11,7 +11,9 @@ const DebtsPage = () => {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [selectedCard, setSelectedCard] = useState<CardWithSummary | null>(null);
 
-  const {cards, loading, error} = useCards() as unknown as { cards: CardWithSummary[], loading: boolean, error: string | null }
+  const {cards, loading, error, fetchUserCards} = useCards() as unknown as { cards: CardWithSummary[], loading: boolean, error: string | null, fetchUserCards: () => void };
+
+  const freshSelectedCard = cards.find(c => c.id === selectedCard?.id) || selectedCard;
 
   if(error) {
     return (
@@ -73,14 +75,15 @@ const DebtsPage = () => {
         isOpen={isAddModalOpen}
         onClose={() => setIsAddModalOpen(false)}
         onSubmit={(data: Card) => {
-          console.log("Nueva tarjeta creada:", data);
           setIsAddModalOpen(false);
+          fetchUserCards();
         }}
       />
 
       <CardDetailDrawer
-        card={selectedCard}
+        card={freshSelectedCard}
         isOpen={!!selectedCard}
+        onAccountUpdate={fetchUserCards}
         onClose={() => setSelectedCard(null)}
       />
     </div>

@@ -54,7 +54,7 @@ const DrawerContainer = ({ children, card, onClose, onAddClick }: any) => (
   </div>
 );
 
-export const CardDetailDrawer = ({ card, isOpen, onClose }: any) => {
+export const CardDetailDrawer = ({ card, isOpen, onClose, onAccountUpdate }: any) => {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
 
   const { deleteDebt } = useDeleteDebt();
@@ -70,6 +70,10 @@ export const CardDetailDrawer = ({ card, isOpen, onClose }: any) => {
         await deleteDebt(debt.id);
 
         fetchUserDebts();
+
+        if (onAccountUpdate) {
+          onAccountUpdate();
+        }
 
       } catch (err: any) {
 
@@ -108,10 +112,14 @@ export const CardDetailDrawer = ({ card, isOpen, onClose }: any) => {
       <AddDebtModal
         isOpen={isAddModalOpen}
         onClose={() => setIsAddModalOpen(false)}
-        accountId={card.id}
-        onSuccess={() => {
+        card={card}
+        onSuccess={async () => {
+          await fetchUserDebts();
+
+          if (onAccountUpdate) {
+            await onAccountUpdate();
+          }
           setIsAddModalOpen(false);
-          fetchUserDebts();
         }}
       />
     </>

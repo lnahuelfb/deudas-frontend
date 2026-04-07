@@ -2,7 +2,6 @@ import {
   ShoppingBagIcon,
   TvIcon,
   SparklesIcon,
-  PencilSquareIcon,
   TrashIcon,
   CheckCircleIcon,
   PencilIcon

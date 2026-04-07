@@ -1,12 +1,13 @@
-import {debtSchema, type Debt} from "../types";
+import { debtSchema, type Debt } from "../types";
 
-export const createDebt = async (data: Omit<Debt, "id">) => {
+export const createDebt = async (data: Debt) => {
   const parsed = debtSchema.safeParse(data);
   if (!parsed.success) {
-    throw new Error("Datos de deuda inválidos");
+    console.log("Parseado", parsed.error.toString())
+    throw new Error("Datos de deuda inválidos", { cause: parsed.error });
   }
 
-  try{
+  try {
     const response = await fetch("http://localhost:3000/api/debts", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -22,8 +23,7 @@ export const createDebt = async (data: Omit<Debt, "id">) => {
     }
     return response.json();
   } catch (error) {
-    console.error("Error creating debt:", error);
-    throw new Error("Error al crear la deuda");
+    throw new Error("Error al crear la deuda", { cause: error });
   }
 }
 
@@ -43,7 +43,7 @@ export const fetchDebts = async (cardId?: string): Promise<Debt[]> => {
     return response.json();
   } catch (error) {
     console.error("Error fetching debts:", error);
-    throw new Error("Error al obtener las deudas");
+    throw new Error("Error al obtener las deudas", { cause: error });
   }
 }
 
@@ -56,15 +56,15 @@ export const deleteDebt = async (debtId: string) => {
 
     if (!response.ok) {
       const errorData = response.status !== 204 ? await response.json() : {};
-      throw new Error(errorData.message || "Error al eliminar la deuda");
+      throw new Error(errorData.message || "Error al eliminar la deuda", { cause: errorData });
     }
 
     if (response.status === 204) return true;
-    
+
     return response.json();
   } catch (error) {
     console.error("Error deleting debt:", error);
-    throw error; // Re-lanzamos el error original para que el hook lo vea
+    throw new Error("Error al eliminar la deuda", { cause: error });
   }
 }
 
@@ -85,6 +85,6 @@ export const updateDebt = async (debtId: string, data: Partial<Omit<Debt, "id">>
     return response.json();
   } catch (error) {
     console.error("Error updating debt:", error);
-    throw new Error("Error al actualizar la deuda");
+    throw new Error("Error al actualizar la deuda", { cause: error });
   }
 }
