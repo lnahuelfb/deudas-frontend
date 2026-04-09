@@ -18,9 +18,9 @@ const Navbar = ({ handleLogout }: NavbarProps) => {
       </Link>
 
       <ul className="hidden md:flex space-x-4">
-        <li><Link to="/dashboard" className={linkClasses}><HomeIcon className="h-5 w-5 mr-2" />Inicio</Link></li>
+        <li><Link to="/dashboard" className={linkClasses}><HomeIcon className="h-5 w-5 mr-2" />Dashboard</Link></li>
         <li><Link to="/debts" className={linkClasses}><CreditCardIcon className="h-5 w-5 mr-2" />Deudas</Link></li>
-        <li><Link to="/profile" className={linkClasses}><UserIcon className="h-5 w-5 mr-2" />Perfil</Link></li>
+        {/* <li><Link to="/profile" className={linkClasses}><UserIcon className="h-5 w-5 mr-2" />Perfil</Link></li> */}
         <li>
           <button type="button" onClick={handleLogout} className={linkClasses}>
             <ArrowRightOnRectangleIcon className="h-5 w-5 mr-2" />Salir
@@ -34,9 +34,9 @@ const Navbar = ({ handleLogout }: NavbarProps) => {
 
       {open && (
         <ul className="flex flex-col space-y-2 mt-2 md:hidden bg-violet-700 p-2 rounded-lg absolute right-4 top-16 w-48 shadow-lg z-50">
-          <li><Link to="/dashboard" className={linkClasses} onClick={() => setOpen(false)}><HomeIcon className="h-5 w-5 mr-2" />Inicio</Link></li>
+          <li><Link to="/dashboard" className={linkClasses} onClick={() => setOpen(false)}><HomeIcon className="h-5 w-5 mr-2" />Dashboard</Link></li>
           <li><Link to="/debts" className={linkClasses} onClick={() => setOpen(false)}><CreditCardIcon className="h-5 w-5 mr-2" />Deudas</Link></li>
-          <li><Link to="/profile" className={linkClasses} onClick={() => setOpen(false)}><UserIcon className="h-5 w-5 mr-2" />Perfil</Link></li>
+          {/* <li><Link to="/profile" className={linkClasses} onClick={() => setOpen(false)}><UserIcon className="h-5 w-5 mr-2" />Perfil</Link></li> */}
           <li>
             <button type="button" onClick={() => { handleLogout(); setOpen(false) }} className={linkClasses}>
               <ArrowRightOnRectangleIcon className="h-5 w-5 mr-2" />Salir
