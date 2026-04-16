@@ -97,7 +97,7 @@ export const DebtFormFields = ({ register, watch, setValue }: DebtFormFieldsProp
             <label className="text-[10px] font-black text-violet-300 uppercase ml-2 tracking-widest opacity-30 italic">
               Info
             </label>
-            <div className="p-4 rounded-2xl bg-white/5 text-white/40 text-[10px] font-bold uppercase flex items-center h-[56px]">
+            <div className="p-4 rounded-2xl bg-white/5 text-white/40 text-[10px] font-bold uppercase flex items-center h-14">
               Se cobrará todos los meses sin límite de cuotas
             </div>
           </div>

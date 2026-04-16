@@ -1,20 +1,27 @@
-import { DebtsList } from "@/features/dashboard/components/DebtList";
-import { DebtsSummary } from "@/features/dashboard/components/DebtSummary";
+import { useGetAllDebts } from "@/features/debt/hooks/useDebt";
+import { Charts } from "@/features/dashboard/components/charts";
+import type { DebtsData } from "@/features/dashboard/types";
 
 const Dashboard = () => {
-  const debts = [
-    { id: 1, name: "Juan Pérez", amount: 5000, dueDate: "2024-07-15", paid: false, category: "Personal" },
-    { id: 2, name: "María Gómez", amount: 3000, dueDate: "2024-08-01", paid: true, category: "Comida" },
-    { id: 3, name: "Carlos López", amount: 2000, dueDate: "2024-09-10", paid: false, category: "Ropa" }
-  ];
+
+  const { data, error } = useGetAllDebts() as { data: DebtsData | undefined; error: string | null }
+
+  const defaultData: DebtsData = data || { debts: [], totalSubscriptions: 0, totalToPay: 0, totalToPayThisMonth: 0 }
+  const debts = data?.debts || []
+
+  console.log(defaultData)
+  console.log("Debts", debts)
 
   return (
     <div className="min-h-screen p-6 bg-violet-950 text-white">
       <h1 className="text-2xl font-bold mb-4">Mis deudas</h1>
 
-      <DebtsSummary debts={debts} />
+      {
+        error && <h1>{error}</h1>
+      }
 
-      <DebtsList debts={debts} />
+      <Charts data={defaultData}/>
+
     </div>
   )
 }

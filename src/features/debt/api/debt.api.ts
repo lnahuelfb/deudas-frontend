@@ -47,6 +47,26 @@ export const fetchDebts = async (cardId?: string): Promise<Debt[]> => {
   }
 }
 
+export const getAllDebts = async () => {
+  try {
+    const response = await fetch("http://localhost:3000/api/debts/all", {
+      method: "GET",
+      credentials: "include"
+    })
+
+    if (!response.ok) {
+      const errorData = await response.json()
+      throw new Error(errorData.message || "Error al obtener las deudas")
+    }
+
+    return response.json()
+  } catch (error) {
+    console.error("Error fetching debts:", error);
+    throw new Error("Error al obtener las deudas", { cause: error });
+  }
+}
+
+
 export const deleteDebt = async (debtId: string) => {
   try {
     const response = await fetch(`http://localhost:3000/api/debts/${debtId}`, {
@@ -88,3 +108,4 @@ export const updateDebt = async (debtId: string, data: Partial<Omit<Debt, "id">>
     throw new Error("Error al actualizar la deuda", { cause: error });
   }
 }
+

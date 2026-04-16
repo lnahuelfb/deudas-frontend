@@ -1,5 +1,5 @@
 import { useEffect, useState, useCallback } from "react"
-import { createDebt, fetchDebts, updateDebt, deleteDebt } from "../api/debt.api";
+import { createDebt, fetchDebts, getAllDebts, updateDebt, deleteDebt } from "../api/debt.api";
 import type { Debt } from "../types";
 
 export const useDebt = (cardId?: string) => {
@@ -33,6 +33,34 @@ export const useDebt = (cardId?: string) => {
 
   return { debts, loading, error, fetchUserDebts: loadDebts };
 };
+
+export const useGetAllDebts = () => {
+  const [data, setDebts] = useState()
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+
+  const getAllDebtData = async () => {
+    setLoading(true)
+    setError(null)
+    try {
+      const allDebts = await getAllDebts()
+      setDebts(allDebts || [])
+    } catch (err: any) {
+      const msg = err.message || "Error al obtener la deuda"
+      setError(msg)
+      throw new Error(msg)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  useEffect(() => {
+    getAllDebtData()
+  }, [])
+
+  return { data, loading, error, getDebts: getAllDebtData }
+}
+
 
 export const useAddDebt = () => {
   const [loading, setLoading] = useState(false)
@@ -105,4 +133,3 @@ export const useUpdateDebt = () => {
 
   return { updateDebt: updateDebtData, loading, error }
 }
-

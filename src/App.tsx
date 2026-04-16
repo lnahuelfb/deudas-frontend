@@ -3,12 +3,7 @@ import { useSession } from './features/auth/hooks/useSession'
 import './App.css'
 
 function App() {
-  const { data: session, isLoading, error } = useSession()
-
-  // if (isLoading) {
-  //   console.log("Loading session...", isLoading)
-  //   return <div>Cargando...</div>
-  // }
+  const { data: session, error } = useSession()
 
   if (error) {
     return (
