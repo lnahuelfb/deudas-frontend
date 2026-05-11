@@ -13,7 +13,8 @@ export type Card = z.infer<typeof cardSchema>;
 
 export interface CardWithSummary extends Card {
   totalToPayThisMonth: number;
-  isCreditCard: boolean;
+  pendingDebtsCount: number;
+  isCreditCard?: boolean;
 }
 
 export const debtSchema = z.object({

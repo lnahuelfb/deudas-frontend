@@ -11,7 +11,7 @@ const DebtsPage = () => {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [selectedCard, setSelectedCard] = useState<CardWithSummary | null>(null);
 
-  const {cards, loading, error, fetchUserCards} = useCards() as unknown as { cards: CardWithSummary[], loading: boolean, error: string | null, fetchUserCards: () => void };
+  const {cards, loading, error, fetchUserCards} = useCards();
 
   const freshSelectedCard = cards.find(c => c.id === selectedCard?.id) || selectedCard;
 
@@ -74,7 +74,7 @@ const DebtsPage = () => {
       <AddCardModal
         isOpen={isAddModalOpen}
         onClose={() => setIsAddModalOpen(false)}
-        onSubmit={(data: Card) => {
+        onSubmit={(_data: Card) => {
           setIsAddModalOpen(false);
           fetchUserCards();
         }}

@@ -1,11 +1,11 @@
 import { useState, useEffect } from 'react';
-import { fetchCards, createCard } from '../api/card.api';
-import type { Card } from '../types';
+import { fetchCards, createCard, payCard } from '../api/card.api';
+import type { Card, CardWithSummary } from '../types';
 
 export const useCards = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [cards, setCards] = useState<Card[]>([]);
+  const [cards, setCards] = useState<CardWithSummary[]>([]);
 
   const fetchUserCards = async () => {
     setLoading(true);
@@ -26,7 +26,7 @@ export const useCards = () => {
   return { cards, loading, error, fetchUserCards };
 };
 
-export const useAddCard = async () => {
+export const useAddCard = () => {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
@@ -46,3 +46,24 @@ export const useAddCard = async () => {
 
   return { addCard, loading, error }
 }
+
+export const usePayCard = () => {
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const doPayCard = async (cardId: string) => {
+    setLoading(true);
+    setError(null);
+    try {
+      const result = await payCard(cardId);
+      setLoading(false);
+      return result;
+    } catch (err: any) {
+      setError(err.message || "Error al procesar el pago");
+      setLoading(false);
+      throw err;
+    }
+  };
+
+  return { doPayCard, loading, error };
+};

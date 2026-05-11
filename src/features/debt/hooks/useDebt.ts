@@ -35,8 +35,8 @@ export const useDebt = (cardId?: string) => {
 };
 
 export const useGetAllDebts = () => {
-  const [data, setDebts] = useState()
-  const [loading, setLoading] = useState(false)
+  const [data, setDebts] = useState<any>(null)
+  const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
   const getAllDebtData = async () => {

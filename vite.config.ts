@@ -1,4 +1,4 @@
-import { defineConfig } from "vite"
+import { defineConfig } from "vitest/config"
 import react from "@vitejs/plugin-react"
 import path from "path"
 
@@ -21,5 +21,10 @@ export default defineConfig({
       "@layouts": path.resolve(__dirname, "./src/layouts"),
       "@ui": path.resolve(__dirname, "./src/ui"),
     },
+  },
+  test: {
+    environment: "jsdom",
+    setupFiles: "./src/test/setup.ts",
+    globals: true,
   },
 })

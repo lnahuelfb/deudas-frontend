@@ -1,6 +1,7 @@
 import { Outlet, Navigate} from "react-router-dom";
 import Header from "@/ui/Header";
 import { useSession } from "@/features/auth/hooks/useSession";
+import { Toaster } from "sonner";
 
 export const AppLayout = () => {
   const { data: user, isLoading, error } = useSession();
@@ -24,6 +25,7 @@ export const AppLayout = () => {
 
   return (
     <div>
+      <Toaster richColors position="bottom-right" />
       <Header handleLogout={handleLogout} />
 
       <main className="p-4 bg-violet-950 min-h-screen text-white">

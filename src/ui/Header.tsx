@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom"
-import { HomeIcon, CreditCardIcon, UserIcon, ArrowRightOnRectangleIcon, Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline"
+import { HomeIcon, CreditCardIcon, ArrowRightOnRectangleIcon, Bars3Icon, XMarkIcon, Cog6ToothIcon } from "@heroicons/react/24/outline"
 import { useState } from "react"
 
 interface NavbarProps {
@@ -13,14 +13,14 @@ const Navbar = ({ handleLogout }: NavbarProps) => {
 
   return (
     <header className="bg-violet-700 text-white p-4 flex justify-between items-center">
-      <Link className="font-bold text-lg" to="/">
+      <Link className="font-bold text-lg" to="/dashboard">
         Deudas
       </Link>
 
       <ul className="hidden md:flex space-x-4">
         <li><Link to="/dashboard" className={linkClasses}><HomeIcon className="h-5 w-5 mr-2" />Dashboard</Link></li>
         <li><Link to="/debts" className={linkClasses}><CreditCardIcon className="h-5 w-5 mr-2" />Deudas</Link></li>
-        {/* <li><Link to="/profile" className={linkClasses}><UserIcon className="h-5 w-5 mr-2" />Perfil</Link></li> */}
+        <li><Link to="/settings" className={linkClasses}><Cog6ToothIcon className="h-5 w-5 mr-2" />Configuración</Link></li>
         <li>
           <button type="button" onClick={handleLogout} className={linkClasses}>
             <ArrowRightOnRectangleIcon className="h-5 w-5 mr-2" />Salir
@@ -36,7 +36,7 @@ const Navbar = ({ handleLogout }: NavbarProps) => {
         <ul className="flex flex-col space-y-2 mt-2 md:hidden bg-violet-700 p-2 rounded-lg absolute right-4 top-16 w-48 shadow-lg z-50">
           <li><Link to="/dashboard" className={linkClasses} onClick={() => setOpen(false)}><HomeIcon className="h-5 w-5 mr-2" />Dashboard</Link></li>
           <li><Link to="/debts" className={linkClasses} onClick={() => setOpen(false)}><CreditCardIcon className="h-5 w-5 mr-2" />Deudas</Link></li>
-          {/* <li><Link to="/profile" className={linkClasses} onClick={() => setOpen(false)}><UserIcon className="h-5 w-5 mr-2" />Perfil</Link></li> */}
+          <li><Link to="/settings" className={linkClasses} onClick={() => setOpen(false)}><Cog6ToothIcon className="h-5 w-5 mr-2" />Configuración</Link></li>
           <li>
             <button type="button" onClick={() => { handleLogout(); setOpen(false) }} className={linkClasses}>
               <ArrowRightOnRectangleIcon className="h-5 w-5 mr-2" />Salir

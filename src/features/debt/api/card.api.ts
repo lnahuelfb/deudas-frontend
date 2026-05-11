@@ -1,4 +1,4 @@
-import { cardSchema, type Card } from "../types";
+import { cardSchema, type Card, type CardWithSummary } from "../types";
 
 export const createCard = async (data: Omit<Card, "id">) => {
   const parsed = cardSchema.safeParse(data);
@@ -14,8 +14,6 @@ export const createCard = async (data: Omit<Card, "id">) => {
       credentials: "include"
     });
 
-    console.log("Create card response:", response);
-
     if (!response.ok) {
       const errorData = await response.json();
       throw new Error(errorData.message || "Error al crear la tarjeta");
@@ -27,7 +25,7 @@ export const createCard = async (data: Omit<Card, "id">) => {
   }
 }
 
-export const fetchCards = async (): Promise<Card[]> => {
+export const fetchCards = async (): Promise<CardWithSummary[]> => {
   try {
     const response = await fetch("http://localhost:3000/api/accounts", {
       method: "GET",
@@ -46,4 +44,20 @@ export const fetchCards = async (): Promise<Card[]> => {
   }
 }
 
+export const payCard = async (cardId: string) => {
+  try {
+    const response = await fetch(`http://localhost:3000/api/accounts/${cardId}/pay`, {
+      method: "POST",
+      credentials: "include"
+    });
 
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.error || "Error al procesar el pago");
+    }
+    return response.json();
+  } catch (error: any) {
+    console.error("Error paying card:", error);
+    throw new Error(error.message || "Error al procesar el pago");
+  }
+}

@@ -1,4 +1,5 @@
 import { CalendarIcon, CreditCardIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
+import { motion } from 'framer-motion';
 import type { CardWithSummary } from '../types';
 
 interface DebtCardProps {
@@ -21,9 +22,14 @@ export const DebtCard = ({ card, onClick, loading }: DebtCardProps) => {
   }
 
   return (
-    <div
+    <motion.div
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.2 }}
+      whileHover={{ scale: 1.01, y: -2 }}
+      whileTap={{ scale: 0.99 }}
       onClick={onClick}
-      className="group relative w-full p-6 rounded-[2.5rem] shadow-xl text-white overflow-hidden cursor-pointer transition-all active:scale-[0.98] mb-4 hover:brightness-110 flex flex-col justify-between min-h-[220px]"
+      className="group relative w-full p-6 rounded-[2.5rem] shadow-xl text-white overflow-hidden cursor-pointer transition-all mb-4 flex flex-col justify-between min-h-[220px]"
       style={{ backgroundColor: card.color }}
     >
       <div className="absolute -right-6 -top-6 w-32 h-32 bg-white/10 rounded-full blur-3xl group-hover:bg-white/20 transition-colors duration-500" />
@@ -65,12 +71,15 @@ export const DebtCard = ({ card, onClick, loading }: DebtCardProps) => {
             </p>
           </div>
 
-          <span className="flex items-center gap-2 bg-white text-black font-bold px-5 py-2.5 rounded-2xl shadow-lg group-hover:shadow-white/20 transition-all text-xs">
+          <motion.span 
+            whileHover={{ x: 5 }}
+            className="flex items-center gap-2 bg-white text-black font-bold px-5 py-2.5 rounded-2xl shadow-lg group-hover:shadow-white/20 transition-all text-xs"
+          >
             Ver detalle
             <ChevronRightIcon className="w-3 h-3 stroke-3" />
-          </span>
+          </motion.span>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 };
