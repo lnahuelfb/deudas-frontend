@@ -4,12 +4,14 @@ import { RouterProvider } from 'react-router-dom'
 import Providers from '@app/providers/queryProvider'
 
 import { router } from './app/router/router.tsx'
+import { Analytics } from "@vercel/analytics/react"
 import './index.css'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <Providers>
       <RouterProvider router={router} />
+      <Analytics />
     </Providers>
   </StrictMode>,
 )
