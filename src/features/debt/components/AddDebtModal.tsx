@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { debtSchema } from '../types';
 import { useAddDebt, useUpdateDebt } from '../hooks/useDebt';
-import { XMarkIcon, PlusIcon, TrashIcon, CheckIcon, PencilIcon } from '@heroicons/react/24/outline';
+import { XMarkIcon, PlusIcon, TrashIcon, CheckIcon, PencilIcon, ChevronDownIcon } from '@heroicons/react/24/outline';
 import { toast } from 'sonner';
 
 export const AddDebtModal = ({ isOpen, onClose, card, onSuccess, debtToEdit = null }: any) => {
@@ -26,6 +26,8 @@ export const AddDebtModal = ({ isOpen, onClose, card, onSuccess, debtToEdit = nu
   });
 
   const [editingTempId, setEditingTempId] = useState<number | null>(null);
+  const [isCategoryOpen, setIsCategoryOpen] = useState(false);
+  const CATEGORIES = ["Ropa", "Supermercado", "Tecnología", "Suscripción", "Varios"];
 
   // Cargar datos si estamos editando una deuda real (desde la DB)
   useEffect(() => {
@@ -202,15 +204,44 @@ export const AddDebtModal = ({ isOpen, onClose, card, onSuccess, debtToEdit = nu
             </div>
 
             {!isSubscription && (
-              <div className="space-y-1">
+              <div 
+                className="space-y-1 relative"
+                onBlur={(e) => {
+                  // Cierra el menú mágicamente si hacés clic afuera, sin usar capas pesadas
+                  if (!e.currentTarget.contains(e.relatedTarget as Node)) {
+                    setIsCategoryOpen(false);
+                  }
+                }}
+              >
                 <label className="text-[10px] font-black text-violet-300 uppercase ml-2">Categoría</label>
-                <select {...register("category")} className="w-full bg-white/5 border-none p-4 rounded-2xl text-white focus:ring-2 focus:ring-violet-500">
-                  <option value="Ropa">Ropa</option>
-                  <option value="Supermercado">Supermercado</option>
-                  <option value="Tecnología">Tecnología</option>
-                  <option value="Suscripción">Suscripción</option>
-                  <option value="Varios">Varios</option>
-                </select>
+                <input type="hidden" {...register("category")} />
+                
+                <button
+                  type="button"
+                  onClick={() => setIsCategoryOpen(!isCategoryOpen)}
+                  className="w-full bg-white/5 border-none p-4 rounded-2xl text-white flex justify-between items-center hover:bg-white/10 transition-colors focus:ring-2 focus:ring-violet-500 outline-none"
+                >
+                  <span className="font-medium text-sm">{watch('category') || 'Seleccionar...'}</span>
+                  <ChevronDownIcon className={`w-4 h-4 text-violet-300 transition-transform duration-200 ${isCategoryOpen ? 'rotate-180' : ''}`} />
+                </button>
+
+                {isCategoryOpen && (
+                  <div className="absolute top-[100%] left-0 w-full mt-1 bg-[#2e1065] border border-white/10 rounded-xl shadow-2xl z-50 overflow-hidden animate-in fade-in zoom-in-95 duration-100">
+                    {CATEGORIES.map((cat) => (
+                      <button
+                        key={cat}
+                        type="button"
+                        onClick={() => {
+                          setValue('category', cat);
+                          setIsCategoryOpen(false);
+                        }}
+                        className={`w-full text-left px-4 py-3 text-sm hover:bg-violet-500 hover:text-white transition-colors cursor-pointer border-b border-white/5 last:border-0 ${watch('category') === cat ? 'bg-violet-500/30 text-white font-bold' : 'text-white/70'}`}
+                      >
+                        {cat}
+                      </button>
+                    ))}
+                  </div>
+                )}
               </div>
             )}
 
