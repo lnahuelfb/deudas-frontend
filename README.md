@@ -1,75 +1,48 @@
-# React + TypeScript + Vite
+# DeudApp - Frontend 💳✨
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Aplicación web moderna y dinámica para la gestión inteligente de finanzas personales, suscripciones y tarjetas de crédito. Diseñada con una estética oscura premium, animaciones fluidas e interfaz de usuario altamente optimizada.
 
-Currently, two official plugins are available:
+## 🚀 Tecnologías Principales
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **Framework:** React 18 + Vite
+- **Lenguaje:** TypeScript
+- **Estilos:** Tailwind CSS
+- **Estado y Caché:** React Query (@tanstack/react-query)
+- **Formularios:** React Hook Form + Zod (Validaciones estrictas)
+- **Enrutamiento:** React Router DOM
+- **Notificaciones:** Sonner
+- **Iconos:** Heroicons
+- **Analíticas:** Vercel Web Analytics
 
-## React Compiler
+## ✨ Características Clave
 
-The React Compiler is enabled on this template. See [this documentation](https://react.dev/learn/react-compiler) for more information.
+- **Optimistic UI Updates:** Respuestas instantáneas en la interfaz al realizar eliminaciones y mutaciones (Zero-Lag UX).
+- **Validación Robusta (Zod):** Formularios a prueba de errores con coerción inteligente de tipos de datos.
+- **Componentes Custom:** Elementos nativos reemplazados con alternativas altamente estilizadas y performantes (ej. Menús Desplegables de Categorías que respetan el `overflow` sin degradar el rendimiento).
+- **Sesiones Seguras Cross-Domain:** Soporte completo para autenticación vía Cookies seguras `SameSite: None` entre dominios distintos.
+- **SPA Routing Optimizado:** Configuración específica (`vercel.json`) para soporte nativo de React Router en Vercel.
 
-Note: This will impact Vite dev & build performances.
+## 🛠️ Instalación y Uso Local
 
-## Expanding the ESLint configuration
+1. Asegúrate de tener **Node.js** instalado.
+2. Clona el repositorio y navega a esta carpeta.
+3. Instala las dependencias:
+   ```bash
+   npm install
+   ```
+4. Crea un archivo `.env` en la raíz basado en tu configuración local:
+   ```env
+   VITE_API_URL=http://localhost:3000/api
+   ```
+5. Levanta el servidor de desarrollo:
+   ```bash
+   npm run dev
+   ```
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## 📦 Despliegue en Producción (Vercel)
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+El proyecto está optimizado para ser desplegado en Vercel sin configuraciones extrañas.
+Asegúrate de configurar la variable de entorno en Vercel:
+- `VITE_API_URL`: La URL base de tu API en producción (ej. `https://tu-api.vercel.app/api`)
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
-
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+*Nota: Vercel Web Analytics ya se encuentra pre-configurado en el archivo `main.tsx`.*
