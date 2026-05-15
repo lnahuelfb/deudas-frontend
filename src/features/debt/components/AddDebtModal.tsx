@@ -68,8 +68,8 @@ export const AddDebtModal = ({ isOpen, onClose, card, onSuccess, debtToEdit = nu
   const tInstallments = watch("totalInstallments");
 
   const calculateMonthly = () => {
-    const total = parseFloat(tAmount);
-    const inst = parseInt(tInstallments.toString());
+    const total = parseFloat(tAmount?.toString() || "0");
+    const inst = parseInt(tInstallments?.toString() || "1");
     if (total && inst > 0) {
       setValue('amountPerMonth', (total / inst).toFixed(2) as any);
     }
@@ -86,8 +86,8 @@ export const AddDebtModal = ({ isOpen, onClose, card, onSuccess, debtToEdit = nu
           category: data.category,
           isSubscription: data.isSubscription,
           accountId: card.id, // Campo faltante que causaba el error 400
-          totalAmount: parseFloat(data.totalAmount),
-          amountPerMonth: parseFloat(data.amountPerMonth),
+          totalAmount: parseFloat(data.totalAmount?.toString() || "0"),
+          amountPerMonth: parseFloat(data.amountPerMonth?.toString() || "0"),
           totalInstallments: parseInt(data.totalInstallments as any),
           initialPaidInstallments: parseInt(data.initialPaidInstallments as any),
         });

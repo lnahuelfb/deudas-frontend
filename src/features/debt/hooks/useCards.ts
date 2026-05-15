@@ -1,7 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { fetchCards, createCard, payCard } from '../api/card.api';
 import { toast } from 'sonner';
-import type { Card } from '../types';
+
 
 export const useCards = () => {
   const { data, isLoading, error, refetch } = useQuery({
