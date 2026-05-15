@@ -30,7 +30,7 @@ export default function Landing() {
           <div className="w-10 h-10 bg-linear-to-br from-violet-500 to-indigo-600 rounded-xl flex items-center justify-center shadow-lg shadow-violet-500/20">
             <span className="font-black text-xl italic">D</span>
           </div>
-          <span className="text-2xl font-black italic tracking-tighter">DEUDAS</span>
+          <span className="text-2xl font-black italic tracking-tighter">DeudApp</span>
         </div>
         <Link 
           to="/login" 
@@ -42,7 +42,6 @@ export default function Landing() {
 
       {/* Hero Section */}
       <main className="relative pt-20 pb-32">
-        {/* Background Glows */}
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-4xl h-[500px] bg-violet-600/20 blur-[120px] rounded-full pointer-events-none" />
         
         <div className="max-w-7xl mx-auto px-6 relative z-10 text-center space-y-8">
@@ -71,7 +70,7 @@ export default function Landing() {
             transition={{ delay: 0.2 }}
             className="max-w-2xl mx-auto text-violet-200/60 text-lg md:text-xl font-medium leading-relaxed"
           >
-            La plataforma definitiva para gestionar tus tarjetas de crédito, consumos en cuotas y suscripciones. Sin complicaciones, con total seguridad.
+            La plataforma definitiva para gestionar tus tarjetas de crédito, consumos en cuotas y suscripciones. Sin complicaciones, de forma privada y segura.
           </motion.p>
 
           <motion.div 
@@ -108,20 +107,16 @@ export default function Landing() {
         <FeatureCard 
           icon={<ShieldCheckIcon className="w-8 h-8" />}
           title="Privacidad Total"
-          description="Tus datos son solo tuyos. Blindaje anti-IDOR y encriptación de grado bancario."
+          description="Tu información es privada y está protegida. Solo vos tenés acceso a tus datos financieros."
           delay={0.6}
         />
       </section>
 
-      {/* Footer */}
+      {/* Footer Limpio */}
       <footer className="border-t border-white/5 py-12">
         <div className="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-8 text-violet-200/30 font-bold text-xs uppercase tracking-widest">
-          <p>© 2026 DEUDAS APP. TODOS LOS DERECHOS RESERVADOS.</p>
-          <div className="flex gap-8">
-            <a href="#" className="hover:text-white transition-colors">Seguridad</a>
-            <a href="#" className="hover:text-white transition-colors">Términos</a>
-            <a href="#" className="hover:text-white transition-colors">Privacidad</a>
-          </div>
+          <p>© 2026 DeudApp. Gestión de finanzas personales.</p>
+          <p>Hecho con ❤️ para tu salud financiera.</p>
         </div>
       </footer>
     </div>

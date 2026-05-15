@@ -23,11 +23,19 @@ export const debtSchema = z.object({
   amountPerMonth: z.number().min(0, "El monto mensual debe ser positivo"),
   totalAmount: z.number().min(0, "El monto total debe ser positivo").optional(),
   isSubscription: z.boolean(),
-  totalInstallments: z.number().min(1).optional(),
+  totalInstallments: z.number().min(1, "El total de cuotas debe ser al menos 1").optional(),
   currentInstallment: z.number().min(1).optional(),
   category: z.string().optional(),
   accountId: z.string().cuid(),
-  initialPaidInstallments: z.number().min(0).optional(),
+  initialPaidInstallments: z.number().min(0, "Las cuotas pagadas no pueden ser negativas").default(0),
+}).refine((data) => {
+  if (data.isSubscription) return true;
+  const total = data.totalInstallments || 1;
+  const paid = data.initialPaidInstallments || 0;
+  return paid <= total;
+}, {
+  message: "Las cuotas pagadas no pueden ser mayores al total de cuotas",
+  path: ["initialPaidInstallments"]
 });
 
 export type Debt = z.infer<typeof debtSchema>;

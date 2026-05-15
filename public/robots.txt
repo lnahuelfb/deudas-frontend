@@ -1,0 +1,12 @@
+# https://www.robotstxt.org/robotstxt.html
+
+User-agent: *
+Allow: /
+Disallow: /dashboard
+Disallow: /debts
+Disallow: /settings
+Disallow: /login
+Disallow: /register
+
+# Opcional: Si luego agregás un sitemap
+# Sitemap: https://deudapp.com/sitemap.xml

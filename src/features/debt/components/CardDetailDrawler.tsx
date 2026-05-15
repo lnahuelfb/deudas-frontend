@@ -132,9 +132,9 @@ export const CardDetailDrawer = ({ card, isOpen, onClose, onAccountUpdate }: any
   // Filtrado de deudas en tiempo real
   const filteredDebts = useMemo(() => {
     if (!searchTerm) return debts;
-    return debts.filter(debt => 
+    return debts.filter((debt: any) => 
       debt.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      debt.category.toLowerCase().includes(searchTerm.toLowerCase())
+      debt.category?.toLowerCase().includes(searchTerm.toLowerCase())
     );
   }, [debts, searchTerm]);
 

@@ -112,6 +112,10 @@ const SignupForm = () => {
           Iniciar sesión
         </Link>
       </p>
+
+      <p className="text-[10px] text-white/30 text-center mt-6 font-medium uppercase tracking-wider">
+        * No se requiere verificación de email para la versión Demo
+      </p>
     </form>
   );
 };

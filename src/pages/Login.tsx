@@ -11,13 +11,7 @@ function Login() {
     if (user) navigate("/");
   }, [user, navigate]);
 
-  if (isLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-violet-950 text-white">
-        Cargando...
-      </div>
-    );
-  }
+  if (isLoading) return null;
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4 bg-linear-to-br from-violet-950 to-violet-800 text-white">

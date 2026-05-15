@@ -1,7 +1,8 @@
+import { API_URL } from "@/config/api.config"
 import type { SignupFormData } from "../types"
 
 export const signup = async (data: SignupFormData) => {
-  const res = await fetch("http://localhost:3000/api/auth/register", {
+  const res = await fetch(`${API_URL}/auth/register`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json"

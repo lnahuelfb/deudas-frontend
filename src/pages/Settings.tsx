@@ -13,6 +13,7 @@ import {
   CurrencyDollarIcon
 } from '@heroicons/react/24/outline';
 
+import { API_URL } from '@/config/api.config';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
@@ -27,7 +28,7 @@ export default function Settings() {
 
   const { mutate: logout } = useMutation({
     mutationFn: async () => {
-      await fetch("http://localhost:3000/api/auth/logout", { method: "POST", credentials: "include" });
+      await fetch(`${API_URL}/auth/logout`, { method: "POST", credentials: "include" });
     },
     onSuccess: () => {
       queryClient.clear();

@@ -1,69 +1,62 @@
-import { useState, useEffect } from 'react';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { fetchCards, createCard, payCard } from '../api/card.api';
-import type { Card, CardWithSummary } from '../types';
+import { toast } from 'sonner';
+import type { Card } from '../types';
 
 export const useCards = () => {
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [cards, setCards] = useState<CardWithSummary[]>([]);
+  const { data, isLoading, error, refetch } = useQuery({
+    queryKey: ['cards'],
+    queryFn: fetchCards,
+    staleTime: 1000 * 60 * 5, // 5 minutos
+  });
 
-  const fetchUserCards = async () => {
-    setLoading(true);
-    try {
-      const data = await fetchCards();
-      setCards(data || []);
-    } catch (err: any) {
-      setError(err.message || "Error desconocido");
-    } finally {
-      setLoading(false);
-    }
+  return { 
+    cards: data || [], 
+    loading: isLoading, 
+    error: error instanceof Error ? error.message : null, 
+    fetchUserCards: refetch 
   };
-
-  useEffect(() => {
-    fetchUserCards();
-  }, []);
-
-  return { cards, loading, error, fetchUserCards };
 };
 
 export const useAddCard = () => {
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
+  const queryClient = useQueryClient();
 
-  const addCard = async (data: Omit<Card, "id">) => {
-    setLoading(true)
-    setError(null)
-    try {
-      const newCard = await createCard(data)
-      setLoading(false)
-      return newCard
-    } catch (err: any) {
-      setError(err.message || "Error desconocido")
-      setLoading(false)
-      return null
+  const { mutateAsync: addCard, isPending, error } = useMutation({
+    mutationFn: createCard,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['cards'] });
+      toast.success("Tarjeta creada correctamente");
+    },
+    onError: (err: any) => {
+      toast.error(err.message || "Error al crear la tarjeta");
     }
-  }
+  });
 
-  return { addCard, loading, error }
-}
+  return { 
+    addCard, 
+    loading: isPending, 
+    error: error instanceof Error ? error.message : null 
+  };
+};
 
 export const usePayCard = () => {
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const queryClient = useQueryClient();
 
-  const doPayCard = async (cardId: string) => {
-    setLoading(true);
-    setError(null);
-    try {
-      const result = await payCard(cardId);
-      setLoading(false);
-      return result;
-    } catch (err: any) {
-      setError(err.message || "Error al procesar el pago");
-      setLoading(false);
-      throw err;
+  const { mutateAsync: doPayCard, isPending, error } = useMutation({
+    mutationFn: payCard,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['cards'] });
+      queryClient.invalidateQueries({ queryKey: ['all-debts'] });
+      toast.success("Pago registrado correctamente");
+    },
+    onError: (err: any) => {
+      toast.error(err.message || "Error al procesar el pago");
     }
-  };
+  });
 
-  return { doPayCard, loading, error };
+  return { 
+    doPayCard, 
+    loading: isPending, 
+    error: error instanceof Error ? error.message : null 
+  };
 };

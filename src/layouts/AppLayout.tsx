@@ -2,17 +2,18 @@ import { Outlet, Navigate} from "react-router-dom";
 import Header from "@/ui/Header";
 import { useSession } from "@/features/auth/hooks/useSession";
 import { Toaster } from "sonner";
+import { API_URL } from "@/config/api.config";
 
 export const AppLayout = () => {
   const { data: user, isLoading, error } = useSession();
 
-  if (isLoading) return <div>Cargando...</div>;
+  if (isLoading) return null;
 
   if (error || !user) return <Navigate to="/login" replace />;
 
   const handleLogout = async () => {
     try {
-      const res = await fetch("http://localhost:3000/api/auth/logout", {
+      const res = await fetch(`${API_URL}/auth/logout`, {
         method: "POST",
         credentials: "include"
       })

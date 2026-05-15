@@ -1,10 +1,11 @@
+import { API_URL } from "@/config/api.config"
 import { useQuery } from "@tanstack/react-query"
 
 export const useSession = () => {
   return useQuery({
     queryKey: ["session"],
     queryFn: async () => {
-      const res = await fetch("http://localhost:3000/api/auth/me", {
+      const res = await fetch(`${API_URL}/auth/me`, {
         credentials: "include"
       })
       

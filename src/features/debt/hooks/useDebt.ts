@@ -1,135 +1,100 @@
-import { useEffect, useState, useCallback } from "react"
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { createDebt, fetchDebts, getAllDebts, updateDebt, deleteDebt } from "../api/debt.api";
+import { toast } from "sonner";
 import type { Debt } from "../types";
 
 export const useDebt = (cardId?: string) => {
-  const [loading, setLoading] = useState(false);
-  const [debts, setDebts] = useState<Debt[]>([]);
-  const [error, setError] = useState<string | null>(null);
+  const { data, isLoading, error, refetch } = useQuery({
+    queryKey: ["debts", cardId],
+    queryFn: () => fetchDebts(cardId!),
+    enabled: !!cardId,
+    staleTime: 1000 * 60 * 5,
+  });
 
-  const loadDebts = useCallback(async () => {
-    if (!cardId) return;
-
-    setLoading(true);
-    setError(null);
-    try {
-      const data = await fetchDebts(cardId);
-      setDebts(data || []);
-    } catch (err) {
-      console.error(err);
-      setError("Error al cargar las deudas" + (err instanceof Error ? `: ${err.message}` : ""));
-    } finally {
-      setLoading(false);
-    }
-  }, [cardId]);
-
-  useEffect(() => {
-    if (cardId) {
-      loadDebts();
-    } else {
-      setDebts([]);
-    }
-  }, [cardId, loadDebts]);
-
-  return { debts, loading, error, fetchUserDebts: loadDebts };
+  return { 
+    debts: data || [], 
+    loading: isLoading, 
+    error: error instanceof Error ? error.message : null, 
+    fetchUserDebts: refetch 
+  };
 };
 
 export const useGetAllDebts = () => {
-  const [data, setDebts] = useState<any>(null)
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
+  const { data, isLoading, error, refetch } = useQuery({
+    queryKey: ["all-debts"],
+    queryFn: getAllDebts,
+    staleTime: 1000 * 60 * 5,
+  });
 
-  const getAllDebtData = async () => {
-    setLoading(true)
-    setError(null)
-    try {
-      const allDebts = await getAllDebts()
-      setDebts(allDebts || [])
-    } catch (err: any) {
-      const msg = err.message || "Error al obtener la deuda"
-      setError(msg)
-      throw new Error(msg)
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  useEffect(() => {
-    getAllDebtData()
-  }, [])
-
-  return { data, loading, error, getDebts: getAllDebtData }
-}
-
+  return { 
+    data: data || null, 
+    loading: isLoading, 
+    error: error instanceof Error ? error.message : null, 
+    getDebts: refetch 
+  };
+};
 
 export const useAddDebt = () => {
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
+  const queryClient = useQueryClient();
 
-  const addDebt = async (data: Debt) => {
-
-    if (data.id) {
-      delete data.id
+  const { mutateAsync: addDebt, isPending, error } = useMutation({
+    mutationFn: (data: Debt) => {
+      const { id, ...rest } = data;
+      return createDebt(rest as any);
+    },
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({ queryKey: ["debts", variables.accountId] });
+      queryClient.invalidateQueries({ queryKey: ["all-debts"] });
+      queryClient.invalidateQueries({ queryKey: ["cards"] });
+      toast.success("Gasto agregado correctamente");
+    },
+    onError: (err: any) => {
+      toast.error(err.message || "Error al crear la deuda");
     }
+  });
 
-    setLoading(true)
-    setError(null)
-    try {
-      const newDebt = await createDebt(data)
-      return newDebt
-    } catch (err: any) {
-      const msg = err.message || "Error al crear la deuda"
-      console.log(err)
-      setError(msg)
-      throw new Error(msg)
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  return { addDebt, loading, error }
-}
+  return { addDebt, loading: isPending, error: error instanceof Error ? error.message : null };
+};
 
 export const useDeleteDebt = () => {
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
+  const queryClient = useQueryClient();
 
-  const deleteDebtData = async (debtId: string) => {
-    setLoading(true)
-    setError(null)
-    try {
-      const response = await deleteDebt(debtId)
-      return response
-    } catch (err: any) {
-      const msg = err.message || "Error al eliminar la deuda"
-      setError(msg)
-      throw new Error(msg)
-    } finally {
-      setLoading(false)
+  const { mutateAsync: doDeleteDebt, isPending, error } = useMutation({
+    mutationFn: deleteDebt,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["debts"] });
+      queryClient.invalidateQueries({ queryKey: ["all-debts"] });
+      queryClient.invalidateQueries({ queryKey: ["cards"] });
+      toast.success("Deuda eliminada correctamente");
+    },
+    onError: (err: any) => {
+      toast.error(err.message || "Error al eliminar la deuda");
     }
-  }
+  });
 
-  return { deleteDebt: deleteDebtData, loading, error }
-}
+  return { deleteDebt: doDeleteDebt, loading: isPending, error: error instanceof Error ? error.message : null };
+};
 
 export const useUpdateDebt = () => {
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
+  const queryClient = useQueryClient();
 
-  const updateDebtData = async (debtId: string, data: Partial<Omit<Debt, "id" | "createdAt" | "updatedAt">>) => {
-    setLoading(true)
-    setError(null)
-    try {
-      const updatedDebt = await updateDebt(debtId, data)
-      return updatedDebt
-    } catch (err: any) {
-      const msg = err.message || "Error al actualizar la deuda"
-      setError(msg)
-      throw new Error(msg)
-    } finally {
-      setLoading(false)
+  const { mutateAsync: doUpdateDebt, isPending, error } = useMutation({
+    mutationFn: ({ debtId, data }: { debtId: string, data: Partial<Omit<Debt, "id" | "createdAt" | "updatedAt">> }) => 
+      updateDebt(debtId, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["debts"] });
+      queryClient.invalidateQueries({ queryKey: ["all-debts"] });
+      queryClient.invalidateQueries({ queryKey: ["cards"] });
+      toast.success("Deuda actualizada correctamente");
+    },
+    onError: (err: any) => {
+      toast.error(err.message || "Error al actualizar la deuda");
     }
-  }
+  });
 
-  return { updateDebt: updateDebtData, loading, error }
-}
+  return { 
+    updateDebt: (debtId: string, data: any) => doUpdateDebt({ debtId, data }), 
+    loading: isPending, 
+    error: error instanceof Error ? error.message : null 
+  };
+};

@@ -1,3 +1,4 @@
+import { API_URL } from "@/config/api.config";
 import { debtSchema, type Debt } from "../types";
 
 export const createDebt = async (data: Debt) => {
@@ -8,7 +9,7 @@ export const createDebt = async (data: Debt) => {
   }
 
   try {
-    const response = await fetch("http://localhost:3000/api/debts", {
+    const response = await fetch(`${API_URL}/debts`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(parsed.data),
@@ -29,7 +30,7 @@ export const createDebt = async (data: Debt) => {
 
 export const fetchDebts = async (cardId?: string): Promise<Debt[]> => {
   try {
-    const url = cardId ? `http://localhost:3000/api/debts?accountId=${cardId}` : "http://localhost:3000/api/debts";
+    const url = cardId ? `${API_URL}/debts?accountId=${cardId}` : `${API_URL}/debts`;
     const response = await fetch(url, {
       method: "GET",
       credentials: "include"
@@ -49,7 +50,7 @@ export const fetchDebts = async (cardId?: string): Promise<Debt[]> => {
 
 export const getAllDebts = async () => {
   try {
-    const response = await fetch("http://localhost:3000/api/debts/all", {
+    const response = await fetch(`${API_URL}/debts/all`, {
       method: "GET",
       credentials: "include"
     })
@@ -66,10 +67,25 @@ export const getAllDebts = async () => {
   }
 }
 
+export const deleteDebtByAccount = async (accountId: string) => {
+  const response = await fetch(`${API_URL}/debts/account/${accountId}`, {
+      method: "DELETE",
+      credentials: "include"
+    });
+
+    if (!response.ok) {
+      const errorData = response.status !== 204 ? await response.json() : {};
+      throw new Error(errorData.message || "Error al eliminar la deuda", { cause: errorData });
+    }
+
+    if (response.status === 204) return true;
+
+    return response.json();
+}
 
 export const deleteDebt = async (debtId: string) => {
   try {
-    const response = await fetch(`http://localhost:3000/api/debts/${debtId}`, {
+    const response = await fetch(`${API_URL}/debts/${debtId}`, {
       method: "DELETE",
       credentials: "include"
     });
@@ -90,7 +106,7 @@ export const deleteDebt = async (debtId: string) => {
 
 export const updateDebt = async (debtId: string, data: Partial<Omit<Debt, "id">>) => {
   try {
-    const response = await fetch(`http://localhost:3000/api/debts/${debtId}`, {
+    const response = await fetch(`${API_URL}/debts/${debtId}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(data),

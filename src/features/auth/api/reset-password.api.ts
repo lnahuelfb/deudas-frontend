@@ -1,5 +1,7 @@
+import { API_URL } from "@/config/api.config";
+
 export const requestPasswordReset = async (email: string) => {
-  const res = await fetch("http://localhost:3000/api/auth/forgot-password", {
+  const res = await fetch(`${API_URL}/auth/forgot-password`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ email }),
@@ -14,7 +16,7 @@ export const requestPasswordReset = async (email: string) => {
 };
 
 export const resetPassword = async (token: string, newPassword: string) => {
-  const res = await fetch("http://localhost:3000/api/auth/reset-password", {
+  const res = await fetch(`${API_URL}/auth/reset-password`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ token, newPassword }),

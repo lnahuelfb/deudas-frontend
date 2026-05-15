@@ -1,5 +1,7 @@
-export const updateUserProfile = async (data: { name?: string; monthlySpendingLimit?: number }) => {
-  const response = await fetch("http://localhost:3000/api/users/me", {
+import { API_URL } from "@/config/api.config";
+
+export const updateUserProfile = async (data: { name?: string; monthlySpendingLimit?: number; password?: string }) => {
+  const response = await fetch(`${API_URL}/users/me`, {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(data),

@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { debtSchema } from '../types';
 import { useAddDebt, useUpdateDebt } from '../hooks/useDebt';
 import { XMarkIcon, PlusIcon, TrashIcon, CheckIcon, PencilIcon } from '@heroicons/react/24/outline';
 import { toast } from 'sonner';
@@ -9,15 +11,17 @@ export const AddDebtModal = ({ isOpen, onClose, card, onSuccess, debtToEdit = nu
   const { updateDebt, loading: updating } = useUpdateDebt();
   const [tempDebts, setTempDebts] = useState<any[]>([]);
 
-  const { register, handleSubmit, watch, reset, setValue } = useForm({
+  const { register, handleSubmit, watch, reset, setValue, formState: { errors } } = useForm({
+    resolver: zodResolver(debtSchema),
     defaultValues: {
       title: '',
       category: 'Varios',
-      totalAmount: '',
+      totalAmount: 0 as any,
       totalInstallments: 1,
       initialPaidInstallments: 0,
       isSubscription: false,
-      amountPerMonth: '',
+      amountPerMonth: 0 as any,
+      accountId: card?.id || '',
     }
   });
 
@@ -138,23 +142,27 @@ export const AddDebtModal = ({ isOpen, onClose, card, onSuccess, debtToEdit = nu
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-1">
                 <label className="text-[10px] font-black text-violet-300 uppercase ml-2">¿Qué compraste?</label>
-                <input {...register("title")} placeholder="Ej: Zapatillas" className="w-full bg-white/5 border-none p-4 rounded-2xl text-white placeholder:text-white/20 focus:ring-2 focus:ring-violet-500" />
+                <input {...register("title")} placeholder="Ej: Zapatillas" className={`w-full bg-white/5 border-none p-4 rounded-2xl text-white placeholder:text-white/20 focus:ring-2 ${errors.title ? 'ring-2 ring-red-500' : 'focus:ring-violet-500'}`} />
+                {errors.title && <p className="text-red-500 text-[10px] mt-1 ml-2 font-bold">{(errors.title as any).message}</p>}
               </div>
 
               <div className="space-y-1">
                 <label className="text-[10px] font-black text-violet-300 uppercase ml-2 ">Total $</label>
-                <input {...register("totalAmount")} onBlur={calculateMonthly} type="number" className="w-full bg-white/5 border-none p-4 rounded-2xl text-white" />
+                <input {...register("totalAmount", { valueAsNumber: true })} onBlur={calculateMonthly} type="number" className={`w-full bg-white/5 border-none p-4 rounded-2xl text-white ${errors.totalAmount ? 'ring-2 ring-red-500' : ''}`} />
+                {errors.totalAmount && <p className="text-red-500 text-[10px] mt-1 ml-2 font-bold">{(errors.totalAmount as any).message}</p>}
               </div>
 
               {!isSubscription && (
                 <>
                   <div className="space-y-1">
                     <label className="text-[10px] font-black text-violet-300 uppercase ml-2">Cuotas</label>
-                    <input {...register("totalInstallments")} onBlur={calculateMonthly} type="number" className="w-full bg-white/5 border-none p-4 rounded-2xl text-white" />
+                    <input {...register("totalInstallments", { valueAsNumber: true })} onBlur={calculateMonthly} type="number" className={`w-full bg-white/5 border-none p-4 rounded-2xl text-white ${errors.totalInstallments ? 'ring-2 ring-red-500' : ''}`} />
+                    {errors.totalInstallments && <p className="text-red-500 text-[10px] mt-1 ml-2 font-bold">{(errors.totalInstallments as any).message}</p>}
                   </div>
                   <div className="space-y-1">
                     <label className="text-[10px] font-black text-violet-300 uppercase ml-2">Ya pagaste</label>
-                    <input {...register("initialPaidInstallments")} type="number" className="w-full bg-white/5 border-none p-4 rounded-2xl text-white" />
+                    <input {...register("initialPaidInstallments", { valueAsNumber: true })} type="number" className={`w-full bg-white/5 border-none p-4 rounded-2xl text-white ${errors.initialPaidInstallments ? 'ring-2 ring-red-500' : ''}`} />
+                    {errors.initialPaidInstallments && <p className="text-red-500 text-[10px] mt-1 ml-2 font-bold">{(errors.initialPaidInstallments as any).message}</p>}
                   </div>
                 </>
               )}

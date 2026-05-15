@@ -95,8 +95,21 @@ const LoginForm = () => {
         {loading ? "Cargando..." : "Ingresar"}
       </button>
 
+      {/* Demo Login Button */}
+      <button
+        type="button"
+        onClick={async () => {
+          const result = await doLogin('demo@test.com', 'demo123');
+          if (result) navigate("/");
+        }}
+        disabled={loading}
+        className="w-full mt-3 py-2 rounded-lg bg-violet-600/30 text-white font-medium border border-violet-500/30 hover:bg-violet-600/50 transition disabled:opacity-70 text-sm"
+      >
+        Probar con cuenta Demo
+      </button>
+
       {/* Register */}
-      <p className="text-sm text-white/80 text-center mt-4">
+      <p className="text-sm text-white/80 text-center mt-6">
         ¿No tenés cuenta?{" "}
         <Link to="/register" className="text-white font-semibold hover:underline">
           Registrate

@@ -1,3 +1,4 @@
+import { API_URL } from "@/config/api.config";
 import { cardSchema, type Card, type CardWithSummary } from "../types";
 
 export const createCard = async (data: Omit<Card, "id">) => {
@@ -7,7 +8,7 @@ export const createCard = async (data: Omit<Card, "id">) => {
   }
 
   try{
-    const response = await fetch("http://localhost:3000/api/accounts", {
+    const response = await fetch(`${API_URL}/accounts`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(parsed.data),
@@ -27,7 +28,7 @@ export const createCard = async (data: Omit<Card, "id">) => {
 
 export const fetchCards = async (): Promise<CardWithSummary[]> => {
   try {
-    const response = await fetch("http://localhost:3000/api/accounts", {
+    const response = await fetch(`${API_URL}/accounts`, {
       method: "GET",
       credentials: "include"
     });
@@ -46,7 +47,7 @@ export const fetchCards = async (): Promise<CardWithSummary[]> => {
 
 export const payCard = async (cardId: string) => {
   try {
-    const response = await fetch(`http://localhost:3000/api/accounts/${cardId}/pay`, {
+    const response = await fetch(`${API_URL}/accounts/${cardId}/pay`, {
       method: "POST",
       credentials: "include"
     });
