@@ -61,14 +61,49 @@ export const useDeleteDebt = () => {
 
   const { mutateAsync: doDeleteDebt, isPending, error } = useMutation({
     mutationFn: deleteDebt,
+    onMutate: async (deletedDebtId) => {
+      // 1. Cancelar cualquier petición en vuelo para que no pise nuestra actualización optimista
+      await queryClient.cancelQueries({ queryKey: ["debts"] });
+      await queryClient.cancelQueries({ queryKey: ["all-debts"] });
+
+      // 2. Guardar el estado anterior por si tenemos que revertir (Rollback)
+      const previousDebts = queryClient.getQueriesData({ queryKey: ["debts"] });
+      const previousAllDebts = queryClient.getQueryData(["all-debts"]);
+
+      // 3. Borrar el ítem de la vista al instante (Optimistic Update)
+      queryClient.setQueriesData({ queryKey: ["debts"] }, (old: any) => {
+        if (Array.isArray(old)) return old.filter((debt: any) => debt.id !== deletedDebtId);
+        return old;
+      });
+      
+      queryClient.setQueryData(["all-debts"], (old: any) => {
+        if (Array.isArray(old)) return old.filter((debt: any) => debt.id !== deletedDebtId);
+        return old;
+      });
+
+      // Retornar el estado previo para usarlo en onError
+      return { previousDebts, previousAllDebts };
+    },
+    onError: (err: any, _, context: any) => {
+      // 4. ¡Falló! Revertimos a como estaba antes
+      if (context?.previousDebts) {
+        context.previousDebts.forEach(([queryKey, data]: any) => {
+          queryClient.setQueryData(queryKey, data);
+        });
+      }
+      if (context?.previousAllDebts) {
+        queryClient.setQueryData(["all-debts"], context.previousAllDebts);
+      }
+      toast.error(err.message || "Error al eliminar la deuda");
+    },
     onSuccess: () => {
+      toast.success("Deuda eliminada correctamente");
+    },
+    onSettled: () => {
+      // 5. Independientemente de si falló o no, sincronizamos con la base de datos real
       queryClient.invalidateQueries({ queryKey: ["debts"] });
       queryClient.invalidateQueries({ queryKey: ["all-debts"] });
       queryClient.invalidateQueries({ queryKey: ["cards"] });
-      toast.success("Deuda eliminada correctamente");
-    },
-    onError: (err: any) => {
-      toast.error(err.message || "Error al eliminar la deuda");
     }
   });
 

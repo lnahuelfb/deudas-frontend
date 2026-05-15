@@ -75,38 +75,71 @@ export const AddDebtModal = ({ isOpen, onClose, card, onSuccess, debtToEdit = nu
     }
   };
 
-  const saveAll = async () => {
+  const handleFinalSubmit = async () => {
+    if (debtToEdit) {
+      // Si estamos editando, forzamos validación y enviamos
+      handleSubmit(saveAll)();
+      return;
+    }
+
+    const currentTitle = watch('title');
+    
+    // Si hay texto en el título, asumimos que el usuario quiere guardar lo que está escribiendo
+    if (currentTitle && currentTitle.trim() !== '') {
+      handleSubmit(async (data) => {
+        // Validó correctamente el formulario actual. Agregamos a la lista temporal y guardamos todo.
+        const allDebts = [...tempDebts, { ...data, id: Date.now() }];
+        await executeMassiveCreate(allDebts);
+      })();
+    } else {
+      // El formulario está vacío. 
+      if (tempDebts.length > 0) {
+        // Si hay cosas en la lista, simplemente las guardamos ignorando el formulario vacío
+        await executeMassiveCreate(tempDebts);
+      } else {
+        // No hay nada en la lista y el form está vacío -> Forzamos errores para que el usuario sepa
+        handleSubmit(saveAll)();
+      }
+    }
+  };
+
+  const executeMassiveCreate = async (debtsList: any[]) => {
+    try {
+      await Promise.all(debtsList.map(debt => addDebt({
+        ...debt,
+        accountId: card.id,
+        totalAmount: parseFloat(debt.totalAmount?.toString() || "0"),
+        amountPerMonth: parseFloat(debt.amountPerMonth?.toString() || "0"),
+        totalInstallments: parseInt(debt.totalInstallments?.toString() || "1"),
+        initialPaidInstallments: parseInt(debt.initialPaidInstallments?.toString() || "0"),
+      })));
+      setTempDebts([]);
+      reset();
+      toast.success("Gastos cargados correctamente");
+      onSuccess();
+    } catch (e: any) {
+      console.error("Error saving debt:", e);
+      toast.error("Error al procesar la solicitud");
+    }
+  };
+
+  const saveAll = async (data: any) => {
     try {
       if (debtToEdit) {
         // MODO EDICIÓN REAL (DB)
-        const data = watch();
-        // IMPORTANTE: El esquema del backend requiere accountId siempre
         await updateDebt(debtToEdit.id, {
           title: data.title,
           category: data.category,
           isSubscription: data.isSubscription,
-          accountId: card.id, // Campo faltante que causaba el error 400
+          accountId: card.id,
           totalAmount: parseFloat(data.totalAmount?.toString() || "0"),
           amountPerMonth: parseFloat(data.amountPerMonth?.toString() || "0"),
-          totalInstallments: parseInt(data.totalInstallments as any),
-          initialPaidInstallments: parseInt(data.initialPaidInstallments as any),
+          totalInstallments: parseInt(data.totalInstallments?.toString() || "1"),
+          initialPaidInstallments: parseInt(data.initialPaidInstallments?.toString() || "0"),
         });
         toast.success("Gasto actualizado correctamente");
-      } else {
-        // MODO CREACIÓN MASIVA
-        await Promise.all(tempDebts.map(debt => addDebt({
-          ...debt,
-          accountId: card.id,
-          totalAmount: parseFloat(debt.totalAmount),
-          amountPerMonth: parseFloat(debt.amountPerMonth),
-          totalInstallments: parseInt(debt.totalInstallments),
-          initialPaidInstallments: parseInt(debt.initialPaidInstallments),
-        })));
-        setTempDebts([]);
-        toast.success("Gastos cargados correctamente");
+        onSuccess();
       }
-
-      onSuccess();
     } catch (e: any) {
       console.error("Error saving debt:", e);
       toast.error("Error al procesar la solicitud");
@@ -235,12 +268,12 @@ export const AddDebtModal = ({ isOpen, onClose, card, onSuccess, debtToEdit = nu
             Cancelar
           </button>
           <button
-            onClick={handleSubmit(saveAll)}
-            disabled={( !isEditingReal && tempDebts.length === 0 ) || adding || updating}
+            onClick={handleFinalSubmit}
+            disabled={(!isEditingReal && tempDebts.length === 0 && !watch('title')) || adding || updating}
             className="flex-2 bg-white disabled:bg-white/10 disabled:text-white/20 text-[#1e1b4b] p-5 rounded-4xl font-black uppercase text-xs shadow-xl transition-all flex items-center justify-center gap-2"
           >
             {adding || updating ? "Procesando..." : (
-              <><CheckIcon className="w-5 h-5 stroke-[3px]" /> {isEditingReal ? 'Guardar Cambios' : 'Confirmar todos los gastos'}</>
+              <><CheckIcon className="w-5 h-5 stroke-[3px]" /> {isEditingReal ? 'Guardar Cambios' : (tempDebts.length > 0 ? 'Confirmar todos' : 'Confirmar gasto')}</>
             )}
           </button>
         </div>
