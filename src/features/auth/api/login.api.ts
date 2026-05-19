@@ -15,7 +15,6 @@ export const login = async (data: LoginFormData) => {
       body: JSON.stringify(parsed.data),
       credentials: "include"
     })
-    console.log("Login response:", res)
     if (!res.ok) throw new Error("Usuario o contraseña incorrectos")
     return res.json()
   } catch (error) {

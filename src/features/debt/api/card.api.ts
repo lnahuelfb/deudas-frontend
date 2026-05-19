@@ -45,10 +45,12 @@ export const fetchCards = async (): Promise<CardWithSummary[]> => {
   }
 }
 
-export const payCard = async (cardId: string) => {
+export const payCard = async ({ cardId, debtIds, paymentDate }: { cardId: string, debtIds: string[], paymentDate?: string }) => {
   try {
     const response = await fetch(`${API_URL}/accounts/${cardId}/pay`, {
       method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ debtIds, paymentDate }),
       credentials: "include"
     });
 

@@ -4,7 +4,6 @@ import { debtSchema, type Debt } from "../types";
 export const createDebt = async (data: Debt) => {
   const parsed = debtSchema.safeParse(data);
   if (!parsed.success) {
-    console.log("Parseado", parsed.error.toString())
     throw new Error("Datos de deuda inválidos", { cause: parsed.error });
   }
 
@@ -15,8 +14,6 @@ export const createDebt = async (data: Debt) => {
       body: JSON.stringify(parsed.data),
       credentials: "include"
     });
-
-    console.log("Create debt response:", response);
 
     if (!response.ok) {
       const errorData = await response.json();

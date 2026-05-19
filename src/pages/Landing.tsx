@@ -20,17 +20,15 @@ export default function Landing() {
     }
   }, [user, isLoading, navigate]);
 
-  if (isLoading) return null;
-
   return (
     <div className="min-h-screen bg-[#1e1b4b] text-white selection:bg-violet-500/30 overflow-x-hidden">
       {/* Navbar Simple */}
       <nav className="max-w-7xl mx-auto px-6 py-8 flex justify-between items-center relative z-20">
         <div className="flex items-center gap-2">
           <div className="w-10 h-10 bg-linear-to-br from-violet-500 to-indigo-600 rounded-xl flex items-center justify-center shadow-lg shadow-violet-500/20">
-            <span className="font-black text-xl italic">D</span>
+            <span className="font-black text-xl italic">C</span>
           </div>
-          <span className="text-2xl font-black italic tracking-tighter">DeudApp</span>
+          <span className="text-2xl font-black italic tracking-tighter">CuentasClaras</span>
         </div>
         <Link 
           to="/login" 
@@ -115,7 +113,7 @@ export default function Landing() {
       {/* Footer Limpio */}
       <footer className="border-t border-white/5 py-12">
         <div className="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-8 text-violet-200/30 font-bold text-xs uppercase tracking-widest">
-          <p>© 2026 DeudApp. Gestión de finanzas personales.</p>
+          <p>© 2026 CuentasClaras. Gestión de finanzas personales.</p>
           <p>Hecho con ❤️ para tu salud financiera.</p>
         </div>
       </footer>

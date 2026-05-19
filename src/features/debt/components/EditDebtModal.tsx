@@ -44,9 +44,8 @@ export const EditDebtModal = ({ isOpen, onClose, debtToEdit, onSuccess }: any) =
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-130 flex items-center justify-center p-4 bg-[#2e1065]/80 backdrop-blur-xl">
+    <div className="fixed inset-0 z-130 flex items-center justify-center p-4 bg-[#0a071b]/95">
       <div className="bg-[#1e1b4b] w-full max-w-2xl overflow-hidden rounded-[3.5rem] shadow-2xl flex flex-col border border-white/10 animate-in zoom-in-95 duration-200">
-        
         {/* Header */}
         <div className="p-8 pb-4 flex justify-between items-center">
           <div>

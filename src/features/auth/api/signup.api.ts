@@ -10,8 +10,6 @@ export const signup = async (data: SignupFormData) => {
     body: JSON.stringify(data)
   })
 
-  console.log("Signup response status:", res)
-
   if (!res.ok) {
     throw new Error("No se pudo registrar el usuario")
   }
