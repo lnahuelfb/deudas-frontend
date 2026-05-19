@@ -10,6 +10,9 @@ export default defineConfig({
       },
     }),
   ],
+  esbuild: {
+    drop: ["console", "debugger"],
+  },
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),

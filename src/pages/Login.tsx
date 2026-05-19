@@ -5,13 +5,11 @@ import LoginForm from '@features/auth/components/LoginForm';
 
 function Login() {
   const navigate = useNavigate();
-  const { data: user, isLoading } = useSession();
+  const { data: user } = useSession();
 
   useEffect(() => {
     if (user) navigate("/");
   }, [user, navigate]);
-
-  if (isLoading) return null;
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4 bg-linear-to-br from-violet-950 to-violet-800 text-white">

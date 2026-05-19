@@ -47,7 +47,6 @@ export const usePayCard = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['cards'] });
       queryClient.invalidateQueries({ queryKey: ['all-debts'] });
-      toast.success("Pago registrado correctamente");
     },
     onError: (err: any) => {
       toast.error(err.message || "Error al procesar el pago");

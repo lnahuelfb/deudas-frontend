@@ -49,9 +49,8 @@ export const DebtCard = ({ card, onClick, loading }: DebtCardProps) => {
       </div>
 
       <div className="relative z-10">
-
         <div className="h-10 flex items-center mb-1">
-          {card.isCreditCard && card.closingDay ? (
+          {card.closingDay && card.dueDay ? (
             <div className="flex items-center gap-1.5 text-[10px] font-bold opacity-90 bg-black/10 w-fit px-3 py-1 rounded-full border border-white/5">
               <CalendarIcon className="w-3 h-3" />
               <span>Cierra el {card.closingDay}</span>
@@ -59,10 +58,11 @@ export const DebtCard = ({ card, onClick, loading }: DebtCardProps) => {
               <span>Vence el {card.dueDay}</span>
             </div>
           ) : (
-            <div className="h-6" />
+            <div className="flex items-center gap-1.5 text-[10px] font-bold opacity-80 bg-black/10 w-fit px-3 py-1.5 rounded-full border border-white/5 uppercase tracking-wider">
+              <span>Deuda Personal</span>
+            </div>
           )}
         </div>
-
         <div className="flex justify-between items-end">
           <div className="space-y-1">
             <p className="text-[10px] opacity-70 uppercase font-black tracking-widest">Total este mes</p>

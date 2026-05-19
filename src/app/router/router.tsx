@@ -1,69 +1,41 @@
-import { lazy, Suspense } from "react";
 import { createBrowserRouter, Navigate } from "react-router-dom";
 import { AppLayout } from "@/layouts/AppLayout";
 
-// Lazy Loading de páginas
-const Dashboard = lazy(() => import("@/pages/Dashboard"));
-const DebtsPage = lazy(() => import("@/pages/Debt"));
-const Login = lazy(() => import("@/pages/Login"));
-const Register = lazy(() => import("@/pages/Register"));
-const Settings = lazy(() => import("@/pages/Settings"));
-const Landing = lazy(() => import("@/pages/Landing"));
-
-// Componente de carga sutil (solo un fondo del color de la app)
-const PageLoader = () => <div className="min-h-screen bg-[#1e1b4b]" />;
+// Importación estática de páginas para navegación instantánea
+import Dashboard from "@/pages/Dashboard";
+import DebtsPage from "@/pages/Debt";
+import Login from "@/pages/Login";
+import Register from "@/pages/Register";
+import Settings from "@/pages/Settings";
+import Landing from "@/pages/Landing";
 
 export const router = createBrowserRouter([
   {
     path: "/",
-    element: (
-      <Suspense fallback={<PageLoader />}>
-        <Landing />
-      </Suspense>
-    ),
+    element: <Landing />,
   },
   {
     path: "/login",
-    element: (
-      <Suspense fallback={<PageLoader />}>
-        <Login />
-      </Suspense>
-    ),
+    element: <Login />,
   },
   {
     path: "/register",
-    element: (
-      <Suspense fallback={<PageLoader />}>
-        <Register />
-      </Suspense>
-    ),
+    element: <Register />,
   },
   {
     element: <AppLayout />,
     children: [
       {
         path: "/dashboard",
-        element: (
-          <Suspense fallback={<PageLoader />}>
-            <Dashboard />
-          </Suspense>
-        ),
+        element: <Dashboard />,
       },
       {
         path: "/debts",
-        element: (
-          <Suspense fallback={<PageLoader />}>
-            <DebtsPage />
-          </Suspense>
-        ),
+        element: <DebtsPage />,
       },
       {
         path: "/settings",
-        element: (
-          <Suspense fallback={<PageLoader />}>
-            <Settings />
-          </Suspense>
-        ),
+        element: <Settings />,
       },
       {
         path: "/home",

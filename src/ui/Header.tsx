@@ -15,9 +15,9 @@ const Navbar = ({ handleLogout }: NavbarProps) => {
     <header className="bg-violet-700 text-white p-4 flex justify-between items-center">
       <Link className="flex items-center gap-2" to="/dashboard">
         <div className="w-8 h-8 bg-linear-to-br from-violet-400 to-indigo-500 rounded-lg flex items-center justify-center shadow-md">
-          <span className="font-black text-sm italic">D</span>
+          <span className="font-black text-sm italic">C</span>
         </div>
-        <span className="font-bold text-lg tracking-tight">DeudApp</span>
+        <span className="font-bold text-lg tracking-tight">CuentasClaras</span>
       </Link>
 
       <ul className="hidden md:flex space-x-4">

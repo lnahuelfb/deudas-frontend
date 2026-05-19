@@ -2,6 +2,7 @@ import { useState, useMemo } from 'react';
 import { XMarkIcon, CheckCircleIcon, SparklesIcon, PlusIcon, MagnifyingGlassIcon } from '@heroicons/react/24/outline';
 import { useDebt, useDeleteDebt } from '../hooks/useDebt';
 import { usePayCard } from '../hooks/useCards';
+import { useCardBilling } from '../hooks/useCardBilling';
 import { DebtItemRow } from './DebItemRow';
 import { AddDebtModal } from './AddDebtModal';
 import { ConfirmModal } from '@/ui/ConfirmModal';
@@ -9,7 +10,7 @@ import { toast } from 'sonner';
 import { motion, AnimatePresence } from 'framer-motion';
 import type { Debt } from '../types';
 
-const DrawerContainer = ({ children, card, onClose, onAddClick, onPayClick, isPaying, searchTerm, setSearchTerm }: any) => (
+const DrawerContainer = ({ children, card, onClose, onAddClick, onPayClick, isPaying, searchTerm, setSearchTerm, billing }: any) => (
   <div className="fixed inset-0 z-100 flex justify-end overflow-hidden">
     <motion.div 
       initial={{ opacity: 0 }}
@@ -52,14 +53,24 @@ const DrawerContainer = ({ children, card, onClose, onAddClick, onPayClick, isPa
           </div>
 
           <div className="flex flex-col gap-1">
-            <p className="text-white/60 text-xs font-black uppercase tracking-[0.2em]">{card.brand || 'Cuenta Personal'}</p>
-            <h2 className="text-white text-4xl font-black tracking-tight leading-none mb-4">{card.name}</h2>
-            
+            <div className="flex flex-wrap items-center gap-1.5 text-white/60 text-xs font-black uppercase tracking-[0.2em]">
+              <span>{card.brand || 'Cuenta Personal'}</span>
+              {card.closingDay && card.dueDay && (
+                <>
+                  <span className="opacity-50">•</span>
+                  <span className="normal-case font-bold opacity-80">Cierra {card.closingDay}</span>
+                  <span className="opacity-50">•</span>
+                  <span className="normal-case font-bold opacity-80">Vence {card.dueDay}</span>
+                </>
+              )}
+            </div>
+            <h2 className="text-white text-4xl font-black tracking-tight leading-none mb-3">{card.name}</h2>
+
             <div className="pt-4 border-t border-white/10">
-              <p className="text-white/60 text-[10px] font-bold uppercase tracking-widest mb-1">Saldo del mes</p>
+              <p className="text-white/60 text-[10px] font-bold uppercase tracking-widest mb-1">{billing?.currentStatementName || 'Saldo del mes'}</p>
               <p className="text-white text-5xl font-black tabular-nums tracking-tighter">
                 <span className="text-2xl mr-1 opacity-50 font-medium">$</span>
-                {card.totalToPayThisMonth.toLocaleString('es-AR', { minimumFractionDigits: 2 })}
+                {(billing?.currentTotal || card.totalToPayThisMonth).toLocaleString('es-AR', { minimumFractionDigits: 2 })}
               </p>
             </div>
           </div>
@@ -73,33 +84,35 @@ const DrawerContainer = ({ children, card, onClose, onAddClick, onPayClick, isPa
         </AnimatePresence>
       </div>
 
-      {/* FOOTER */}
-      <div className="p-6 bg-[#4c1d95] border-t border-white/5 space-y-3 shrink-0">
+      <div className="p-6 bg-[#4c1d95] border-t border-white/5 flex gap-3 shrink-0 items-center justify-between">
+        <button
+          onClick={onAddClick}
+          className={`${
+            (billing?.currentTotal > 0 || card.totalToPayThisMonth > 0) ? 'w-16 h-16 shrink-0 rounded-[1.8rem]' : 'w-full h-16 rounded-[1.8rem] gap-2'
+          } bg-white/10 hover:bg-white/15 text-white font-bold flex items-center justify-center transition-all active:scale-95 border border-white/5`}
+          title="Cargar nuevo gasto"
+        >
+          <PlusIcon className="w-6 h-6" />
+          {!(billing?.currentTotal > 0 || card.totalToPayThisMonth > 0) && <span className="text-sm uppercase tracking-wider">Cargar nuevo gasto</span>}
+        </button>
+
         <AnimatePresence>
-          {card.totalToPayThisMonth > 0 && (
+          {(billing?.currentTotal > 0 || card.totalToPayThisMonth > 0) && (
             <motion.button 
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
               onClick={onPayClick}
               disabled={isPaying}
-              className="w-full bg-emerald-500 hover:bg-emerald-400 text-white font-black p-5 rounded-3xl shadow-xl flex items-center justify-center gap-3 transition-all active:scale-95 disabled:opacity-50"
+              className="flex-1 bg-emerald-500 hover:bg-emerald-400 text-white font-black h-16 rounded-[1.8rem] shadow-xl flex items-center justify-center gap-3 transition-all active:scale-95 disabled:opacity-50 min-w-0"
             >
-              <CheckCircleIcon className="w-6 h-6" />
-              <span className="text-sm uppercase tracking-wider">
-                {isPaying ? 'Procesando...' : `Marcar como pagado ($${card.totalToPayThisMonth.toLocaleString('es-AR')})`}
+              <CheckCircleIcon className="w-6 h-6 shrink-0" />
+              <span className="text-xs uppercase tracking-wider font-extrabold truncate">
+                {isPaying ? 'Procesando...' : `Pagar (${(billing?.currentTotal || card.totalToPayThisMonth).toLocaleString('es-AR', { style: 'currency', currency: 'ARS', maximumFractionDigits: 0 })})`}
               </span>
             </motion.button>
           )}
         </AnimatePresence>
-
-        <button
-          onClick={onAddClick}
-          className="w-full bg-white/10 hover:bg-white/15 text-white font-bold p-5 rounded-3xl flex items-center justify-center gap-2 transition-all active:scale-95 border border-white/5"
-        >
-          <PlusIcon className="w-5 h-5" />
-          <span>Cargar nuevo gasto</span>
-        </button>
       </div>
     </motion.div>
   </div>
@@ -138,6 +151,8 @@ export const CardDetailDrawer = ({ card, isOpen, onClose, onAccountUpdate }: any
     );
   }, [debts, searchTerm]);
 
+  const billing = useCardBilling(card, filteredDebts);
+
   const handleDeleteClick = (debt: Debt) => {
     if (!debt.id) return;
     setConfirmConfig({
@@ -164,7 +179,7 @@ export const CardDetailDrawer = ({ card, isOpen, onClose, onAccountUpdate }: any
     setConfirmConfig({
       isOpen: true,
       title: '¿Confirmar pago?',
-      description: `Se registrará el pago de la tarjeta "${card.name}" para este mes y se actualizarán tus consumos.`,
+      description: `Se registrará el pago del ${billing.currentStatementName} por $${billing.currentTotal.toLocaleString('es-AR')}. Esta acción actualizará solo los consumos que entraron este mes.`,
       variant: 'primary',
       onConfirm: executePay
     });
@@ -172,8 +187,10 @@ export const CardDetailDrawer = ({ card, isOpen, onClose, onAccountUpdate }: any
 
   const executePay = async () => {
     try {
-      await doPayCard(card.id);
-      toast.success(`¡Tarjeta ${card.name} pagada!`);
+      const debtIds = billing.currentStatementDebts.map(d => d.id).filter(id => id) as string[];
+      const paymentDate = new Date().toISOString();
+      await doPayCard({ cardId: card.id, debtIds, paymentDate });
+      toast.success(`¡${billing.currentStatementName} pagado correctamente!`);
       await fetchUserDebts();
       if (onAccountUpdate) await onAccountUpdate();
     } catch (err: any) {
@@ -203,6 +220,7 @@ export const CardDetailDrawer = ({ card, isOpen, onClose, onAccountUpdate }: any
             isPaying={isPaying}
             searchTerm={searchTerm}
             setSearchTerm={setSearchTerm}
+            billing={billing}
           >
             {loading ? (
               <motion.div key="loading" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="space-y-4">
@@ -236,19 +254,43 @@ export const CardDetailDrawer = ({ card, isOpen, onClose, onAccountUpdate }: any
                 </div>
               </motion.div>
             ) : (
-              <motion.div key="list" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-3">
-                <p className="text-violet-300 text-[10px] font-bold uppercase tracking-[0.2em] mb-2">
-                  {searchTerm ? `Resultados para "${searchTerm}"` : 'Consumos de este mes'}
-                </p>
-                {filteredDebts.map((debt: Debt, index: number) => (
-                  <motion.div key={debt.id} initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: index * 0.02, duration: 0.15 }}>
-                    <DebtItemRow 
-                      debt={debt} 
-                      onDelete={() => handleDeleteClick(debt)} 
-                      onEdit={() => handleEditClick(debt)}
-                    />
-                  </motion.div>
-                ))}
+              <motion.div key="list" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-6 pb-6">
+                
+                {billing.currentStatementDebts.length > 0 && (
+                  <div className="space-y-3">
+                    <p className="text-violet-300 text-[10px] font-bold uppercase tracking-[0.2em] mb-2 flex items-center justify-between">
+                      <span>{searchTerm ? `Resultados en ${billing.currentStatementName}` : billing.currentStatementName}</span>
+                    </p>
+                    {billing.currentStatementDebts.map((debt: Debt, index: number) => (
+                      <motion.div key={debt.id} initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: index * 0.02, duration: 0.15 }}>
+                        <DebtItemRow 
+                          debt={debt} 
+                          onDelete={() => handleDeleteClick(debt)} 
+                          onEdit={() => handleEditClick(debt)}
+                        />
+                      </motion.div>
+                    ))}
+                  </div>
+                )}
+
+                {billing.nextStatementDebts.length > 0 && (
+                  <div className="space-y-3 pt-4 border-t border-white/5">
+                    <p className="text-violet-300/50 text-[10px] font-bold uppercase tracking-[0.2em] mb-2 flex items-center justify-between">
+                      <span>{searchTerm ? `Resultados en ${billing.nextStatementName}` : billing.nextStatementName}</span>
+                      <span className="text-white/50 font-medium">${billing.nextTotal.toLocaleString('es-AR')}</span>
+                    </p>
+                    {billing.nextStatementDebts.map((debt: Debt, index: number) => (
+                      <motion.div key={debt.id} initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: index * 0.02, duration: 0.15 }}>
+                        <DebtItemRow 
+                          debt={debt} 
+                          onDelete={() => handleDeleteClick(debt)} 
+                          onEdit={() => handleEditClick(debt)}
+                        />
+                      </motion.div>
+                    ))}
+                  </div>
+                )}
+
               </motion.div>
             )}
           </DrawerContainer>
