@@ -23,6 +23,21 @@ export default defineConfig({
         scope: '/',
         start_url: '/',
         orientation: 'portrait-primary',
+        categories: ['finance', 'productivity'],
+        screenshots: [
+          {
+            src: 'pwa-512x512.png',
+            sizes: '512x512',
+            type: 'image/png',
+            form_factor: 'wide'
+          },
+          {
+            src: 'pwa-192x192.png',
+            sizes: '192x192',
+            type: 'image/png',
+            form_factor: 'narrow'
+          }
+        ],
         icons: [
           {
             src: 'pwa-64x64.png',
@@ -44,6 +59,19 @@ export default defineConfig({
             sizes: '512x512',
             type: 'image/png',
             purpose: 'maskable'
+          }
+        ]
+      },
+      workbox: {
+        globPatterns: ['**/*.{js,css,html,ico,png,svg,webmanifest}'],
+        runtimeCaching: [
+          {
+            urlPattern: /^https:\/\/api\./,
+            handler: 'NetworkFirst',
+            options: {
+              cacheName: 'api-cache',
+              networkTimeoutSeconds: 5,
+            }
           }
         ]
       }
