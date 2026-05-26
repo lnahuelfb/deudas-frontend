@@ -70,7 +70,7 @@ const DrawerContainer = ({ children, card, onClose, onAddClick, onPayClick, isPa
               <p className="text-white/60 text-[10px] font-bold uppercase tracking-widest mb-1">{billing?.currentStatementName || 'Saldo del mes'}</p>
               <p className="text-white text-5xl font-black tabular-nums tracking-tighter">
                 <span className="text-2xl mr-1 opacity-50 font-medium">$</span>
-                {(billing?.currentTotal || card.totalToPayThisMonth).toLocaleString('es-AR', { minimumFractionDigits: 2 })}
+                {(billing?.currentTotal || card.totalToPayThisMonth).toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
               </p>
             </div>
           </div>
@@ -179,7 +179,7 @@ export const CardDetailDrawer = ({ card, isOpen, onClose, onAccountUpdate }: any
     setConfirmConfig({
       isOpen: true,
       title: '¿Confirmar pago?',
-      description: `Se registrará el pago del ${billing.currentStatementName} por $${billing.currentTotal.toLocaleString('es-AR')}. Esta acción actualizará solo los consumos que entraron este mes.`,
+      description: `Se registrará el pago del ${billing.currentStatementName} por $${billing.currentTotal.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}. Esta acción actualizará solo los consumos que entraron este mes.`,
       variant: 'primary',
       onConfirm: executePay
     });
@@ -277,7 +277,7 @@ export const CardDetailDrawer = ({ card, isOpen, onClose, onAccountUpdate }: any
                   <div className="space-y-3 pt-4 border-t border-white/5">
                     <p className="text-violet-300/50 text-[10px] font-bold uppercase tracking-[0.2em] mb-2 flex items-center justify-between">
                       <span>{searchTerm ? `Resultados en ${billing.nextStatementName}` : billing.nextStatementName}</span>
-                      <span className="text-white/50 font-medium">${billing.nextTotal.toLocaleString('es-AR')}</span>
+                      <span className="text-white/50 font-medium">${billing.nextTotal.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
                     </p>
                     {billing.nextStatementDebts.map((debt: Debt, index: number) => (
                       <motion.div key={debt.id} initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: index * 0.02, duration: 0.15 }}>

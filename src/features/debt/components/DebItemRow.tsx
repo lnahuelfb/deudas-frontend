@@ -48,11 +48,11 @@ export const DebtItemRow = ({ debt, onEdit, onDelete }: DebtItemRowProps) => {
 
       <div className="text-right mr-2 transition-all group-hover:mr-10">
         <p className={`text-lg font-black text-white leading-none mb-1 ${isPaidOff ? 'opacity-40' : ''}`}>
-          ${debt.amountPerMonth.toLocaleString('es-AR', { minimumFractionDigits: 2 })}
+          ${debt.amountPerMonth.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
         </p>
         {!debt.isSubscription && !isPaidOff && (
           <span className="text-[9px] font-black opacity-40 uppercase text-white whitespace-nowrap">
-            Faltan ${debt.remainingAmount?.toLocaleString('es-AR')}
+            Faltan ${debt.remainingAmount?.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
           </span>
         )}
       </div>

@@ -136,7 +136,7 @@ export const Charts = ({ data, monthlyLimit = 0 }: ChartsProps) => {
                 </h3>
               </div>
               <p className="text-white/40 text-[10px] font-black uppercase tracking-[0.2em]">
-                Uso del presupuesto: ${nTotalToPayThisMonth.toLocaleString()} de ${nMonthlyLimit.toLocaleString()}
+                Uso del presupuesto: ${nTotalToPayThisMonth.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} de ${nMonthlyLimit.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
               </p>
             </div>
             <div className="w-full md:w-64 space-y-2">
@@ -173,7 +173,7 @@ export const Charts = ({ data, monthlyLimit = 0 }: ChartsProps) => {
             <p className="text-white/60 text-[10px] font-black uppercase tracking-[0.2em] mb-1">Total a pagar este mes</p>
             <h3 className="text-white text-5xl font-black tracking-tighter">
               <span className="text-2xl opacity-50 mr-1">$</span>
-              {nTotalToPayThisMonth.toLocaleString('es-AR')}
+              {nTotalToPayThisMonth.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
             </h3>
             <div className="mt-6">
                <span className="bg-white/20 px-3 py-1.5 rounded-full text-[10px] font-black text-white uppercase tracking-widest">
@@ -195,7 +195,7 @@ export const Charts = ({ data, monthlyLimit = 0 }: ChartsProps) => {
                <SparklesIcon className="w-4 h-4 text-violet-400" />
                <p className="text-violet-300 text-[10px] font-black uppercase tracking-[0.2em]">Suscripciones</p>
             </div>
-            <h4 className="text-white text-2xl font-black">${nTotalSubscriptions.toLocaleString('es-AR')}</h4>
+            <h4 className="text-white text-2xl font-black">${nTotalSubscriptions.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</h4>
             <p className="text-white/30 text-[10px] font-bold uppercase mt-1">del gasto mensual</p>
           </div>
         </div>
@@ -210,7 +210,7 @@ export const Charts = ({ data, monthlyLimit = 0 }: ChartsProps) => {
             </div>
             <h3 className="text-white text-3xl font-black tracking-tighter">
               <span className="text-xl opacity-50 mr-1">$</span>
-              {nTotalToPay.toLocaleString('es-AR')}
+              {nTotalToPay.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
             </h3>
             <p className="text-violet-400/50 text-[9px] font-bold uppercase mt-1 tracking-wider italic">
               * No incluye suscripciones recurrentes
@@ -264,7 +264,7 @@ export const Charts = ({ data, monthlyLimit = 0 }: ChartsProps) => {
                        <div className="w-2 h-2 rounded-full" style={{ backgroundColor: categoryColors[index % categoryColors.length] }} />
                        <span className="text-white/70 text-sm font-bold">{label}</span>
                     </div>
-                    <span className="text-white font-black text-sm">${value.toLocaleString('es-AR')}</span>
+                    <span className="text-white font-black text-sm">${value.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
                   </div>
                 );
               })}

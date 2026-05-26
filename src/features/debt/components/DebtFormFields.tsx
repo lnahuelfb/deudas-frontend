@@ -175,7 +175,7 @@ export const DebtFormFields = ({ register, watch, setValue }: DebtFormFieldsProp
                     const amt = parseFloat(watch("amountPerMonth") || "0");
                     const inst = parseInt(watch("totalInstallments") || "1");
                     const tot = parseFloat(watch("totalAmount") || "0");
-                    return `${inst} cuotas de $${amt.toLocaleString('es-AR', { minimumFractionDigits: 2 })} = $${tot.toLocaleString('es-AR', { minimumFractionDigits: 2 })} total`;
+                    return `${inst} cuotas de $${amt.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} = $${tot.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} total`;
                   })()}
                 </p>
               </div>

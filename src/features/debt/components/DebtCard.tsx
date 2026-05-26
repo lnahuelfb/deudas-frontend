@@ -67,7 +67,7 @@ export const DebtCard = ({ card, onClick, loading }: DebtCardProps) => {
           <div className="space-y-1">
             <p className="text-[10px] opacity-70 uppercase font-black tracking-widest">Total este mes</p>
             <p className="text-3xl font-black leading-none">
-              ${card.totalToPayThisMonth.toLocaleString('es-AR', { minimumFractionDigits: 2 })}
+              ${card.totalToPayThisMonth.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
             </p>
           </div>
 
