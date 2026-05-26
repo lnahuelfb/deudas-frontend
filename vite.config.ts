@@ -18,6 +18,11 @@ export default defineConfig({
         short_name: 'CuentasClaras',
         description: 'Tomá el control de tus consumos con tarjeta, deudas y suscripciones de forma inteligente y responsable.',
         theme_color: '#1e1b4b',
+        background_color: '#ffffff',
+        display: 'standalone',
+        scope: '/',
+        start_url: '/',
+        orientation: 'portrait-primary',
         icons: [
           {
             src: 'pwa-64x64.png',

@@ -1,5 +1,12 @@
 import { AnimatePresence, motion } from "framer-motion"
-import { XMarkIcon, ArrowDownTrayIcon, ShareIcon, PlusIcon, CheckIcon } from "@heroicons/react/24/outline"
+import {
+  XMarkIcon,
+  ArrowDownTrayIcon,
+  ShareIcon,
+  PlusIcon,
+  CheckIcon,
+  EllipsisVerticalIcon,
+} from "@heroicons/react/24/outline"
 import { usePWAInstallContext } from "@/hooks/PWAInstallContext"
 
 /* ───────────────────────────────── Banner ───────────────────────────────── */
@@ -59,7 +66,13 @@ export function InstallBanner() {
 
 /* ──────────────────────────── Botón para el menú ────────────────────────── */
 
-export function InstallMenuItem({ className, onClick }: { className?: string; onClick?: () => void }) {
+export function InstallMenuItem({
+  className,
+  onClick,
+}: {
+  className?: string
+  onClick?: () => void
+}) {
   const { canInstall, installApp } = usePWAInstallContext()
 
   if (!canInstall) return null
@@ -85,24 +98,80 @@ export function IOSInstallModal() {
   const steps = [
     {
       icon: <ShareIcon className="h-7 w-7 text-violet-300" />,
-      title: "Tocá el botón \"Compartir\"",
+      title: 'Tocá el botón "Compartir"',
       description: "El ícono con la flecha hacia arriba en la barra de Safari",
     },
     {
       icon: <PlusIcon className="h-7 w-7 text-violet-300" />,
-      title: "Seleccioná \"Agregar a inicio\"",
+      title: 'Seleccioná "Agregar a inicio"',
       description: "Buscalo en la lista de opciones que aparece",
     },
     {
       icon: <CheckIcon className="h-7 w-7 text-violet-300" />,
-      title: "Tocá \"Agregar\" para confirmar",
-      description: "¡Listo! CuentasClaras va a aparecer en tu pantalla de inicio",
+      title: 'Tocá "Agregar" para confirmar',
+      description:
+        "¡Listo! CuentasClaras va a aparecer en tu pantalla de inicio",
     },
   ]
 
   return (
+    <InstallModalShell
+      open={showIOSModal}
+      onClose={() => setShowIOSModal(false)}
+      steps={steps}
+    />
+  )
+}
+
+/* ──────────────────────── Modal Genérico (Desktop / otros) ──────────────── */
+
+export function GenericInstallModal() {
+  const { showGenericModal, setShowGenericModal } = usePWAInstallContext()
+
+  const steps = [
+    {
+      icon: <EllipsisVerticalIcon className="h-7 w-7 text-violet-300" />,
+      title: "Abrí el menú del navegador",
+      description:
+        'Los tres puntos (⋮) en Chrome/Edge, o el menú "Archivo" en otros navegadores',
+    },
+    {
+      icon: <ArrowDownTrayIcon className="h-7 w-7 text-violet-300" />,
+      title: 'Buscá "Instalar aplicación"',
+      description:
+        'También puede aparecer como "Instalar CuentasClaras..." o "Agregar a inicio"',
+    },
+    {
+      icon: <CheckIcon className="h-7 w-7 text-violet-300" />,
+      title: "Confirmá la instalación",
+      description:
+        "¡Listo! Se va a crear un acceso directo como cualquier otra app",
+    },
+  ]
+
+  return (
+    <InstallModalShell
+      open={showGenericModal}
+      onClose={() => setShowGenericModal(false)}
+      steps={steps}
+    />
+  )
+}
+
+/* ──────────────────────── Shell compartido de modal ─────────────────────── */
+
+function InstallModalShell({
+  open,
+  onClose,
+  steps,
+}: {
+  open: boolean
+  onClose: () => void
+  steps: { icon: React.ReactNode; title: string; description: string }[]
+}) {
+  return (
     <AnimatePresence>
-      {showIOSModal && (
+      {open && (
         <>
           {/* Overlay */}
           <motion.div
@@ -110,7 +179,7 @@ export function IOSInstallModal() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm"
-            onClick={() => setShowIOSModal(false)}
+            onClick={onClose}
           />
 
           {/* Bottom sheet */}
@@ -128,7 +197,9 @@ export function IOSInstallModal() {
               {/* Title */}
               <div className="mb-6 flex items-center gap-3">
                 <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-violet-400 to-indigo-500 shadow-lg">
-                  <span className="text-sm font-black italic text-white">C</span>
+                  <span className="text-sm font-black italic text-white">
+                    C
+                  </span>
                 </div>
                 <h2 className="text-xl font-bold text-white">
                   Instalá CuentasClaras
@@ -147,7 +218,9 @@ export function IOSInstallModal() {
                     </div>
                     <div>
                       <p className="font-semibold text-white">
-                        <span className="mr-1.5 text-violet-400">{i + 1}.</span>
+                        <span className="mr-1.5 text-violet-400">
+                          {i + 1}.
+                        </span>
                         {step.title}
                       </p>
                       <p className="mt-0.5 text-sm text-violet-300">
@@ -161,7 +234,7 @@ export function IOSInstallModal() {
               {/* CTA */}
               <button
                 type="button"
-                onClick={() => setShowIOSModal(false)}
+                onClick={onClose}
                 className="mt-6 w-full rounded-xl bg-gradient-to-r from-violet-500 to-indigo-500 py-3 text-center font-semibold text-white shadow-lg transition-transform hover:scale-[1.02] active:scale-[0.98]"
               >
                 Entendido
