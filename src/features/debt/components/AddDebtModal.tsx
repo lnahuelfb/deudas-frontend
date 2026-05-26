@@ -448,7 +448,7 @@ export const AddDebtModal = ({ isOpen, onClose, card, onSuccess, debtToEdit = nu
                           const amt = parseFloat((watch("amountPerMonth") as any) || "0");
                           const inst = parseInt((watch("totalInstallments") as any) || "1");
                           const tot = parseFloat((watch("totalAmount") as any) || "0");
-                          return `${inst} cuotas de $${amt.toLocaleString('es-AR', { minimumFractionDigits: 2 })} = $${tot.toLocaleString('es-AR', { minimumFractionDigits: 2 })} total`;
+                          return `${inst} cuotas de $${amt.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} = $${tot.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} total`;
                         })()}
                       </p>
                     </div>
@@ -522,8 +522,8 @@ export const AddDebtModal = ({ isOpen, onClose, card, onSuccess, debtToEdit = nu
                   <div>
                     <p className="text-white font-bold">{debt.title} {editingTempId === debt.id && <span className="text-[10px] bg-violet-500 px-2 py-0.5 rounded-full ml-2">EDITANDO</span>}</p>
                     <p className="text-white/40 text-[10px] uppercase font-black">
-                      {debt.isSubscription ? `Suscripción de $${parseFloat(debt.amountPerMonth).toLocaleString()}` :
-                        `${parseFloat(debt.amountPerMonth).toLocaleString()} x ${debt.totalInstallments} cuotas`}
+                      {debt.isSubscription ? `Suscripción de $${parseFloat(debt.amountPerMonth).toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` :
+                        `${parseFloat(debt.amountPerMonth).toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} x ${debt.totalInstallments} cuotas`}
                     </p>
                   </div>
                   <div className="flex items-center gap-2">
