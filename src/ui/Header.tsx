@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom"
 import { HomeIcon, CreditCardIcon, ArrowRightOnRectangleIcon, Bars3Icon, XMarkIcon, Cog6ToothIcon } from "@heroicons/react/24/outline"
 import { useState } from "react"
+import { InstallMenuItem } from "@/ui/InstallPWA"
 
 interface NavbarProps {
   handleLogout: () => void
@@ -24,6 +25,7 @@ const Navbar = ({ handleLogout }: NavbarProps) => {
         <li><Link to="/dashboard" className={linkClasses}><HomeIcon className="h-5 w-5 mr-2" />Dashboard</Link></li>
         <li><Link to="/debts" className={linkClasses}><CreditCardIcon className="h-5 w-5 mr-2" />Deudas</Link></li>
         <li><Link to="/settings" className={linkClasses}><Cog6ToothIcon className="h-5 w-5 mr-2" />Configuración</Link></li>
+        <li><InstallMenuItem className={linkClasses} /></li>
         <li>
           <button type="button" onClick={handleLogout} className={linkClasses}>
             <ArrowRightOnRectangleIcon className="h-5 w-5 mr-2" />Salir
@@ -40,6 +42,7 @@ const Navbar = ({ handleLogout }: NavbarProps) => {
           <li><Link to="/dashboard" className={linkClasses} onClick={() => setOpen(false)}><HomeIcon className="h-5 w-5 mr-2" />Dashboard</Link></li>
           <li><Link to="/debts" className={linkClasses} onClick={() => setOpen(false)}><CreditCardIcon className="h-5 w-5 mr-2" />Deudas</Link></li>
           <li><Link to="/settings" className={linkClasses} onClick={() => setOpen(false)}><Cog6ToothIcon className="h-5 w-5 mr-2" />Configuración</Link></li>
+          <li><InstallMenuItem className={linkClasses} onClick={() => setOpen(false)} /></li>
           <li>
             <button type="button" onClick={() => { handleLogout(); setOpen(false) }} className={linkClasses}>
               <ArrowRightOnRectangleIcon className="h-5 w-5 mr-2" />Salir
