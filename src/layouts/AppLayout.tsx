@@ -3,7 +3,7 @@ import Header from "@/ui/Header";
 import { useSession } from "@/features/auth/hooks/useSession";
 import { Toaster } from "sonner";
 import { API_URL } from "@/config/api.config";
-import { InstallBanner, IOSInstallModal } from "@/ui/InstallPWA";
+import { InstallBanner, IOSInstallModal, GenericInstallModal } from "@/ui/InstallPWA";
 import { PWAInstallProvider } from "@/hooks/PWAInstallContext";
 
 export const AppLayout = () => {
@@ -38,6 +38,7 @@ export const AppLayout = () => {
 
         <InstallBanner />
         <IOSInstallModal />
+        <GenericInstallModal />
       </div>
     </PWAInstallProvider>
   );

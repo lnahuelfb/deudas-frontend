@@ -14,6 +14,7 @@ export function usePWAInstall() {
   const [isInstalled, setIsInstalled] = useState(false)
   const [isIOS, setIsIOS] = useState(false)
   const [showIOSModal, setShowIOSModal] = useState(false)
+  const [showGenericModal, setShowGenericModal] = useState(false)
   const [bannerDismissed, setBannerDismissed] = useState(false)
 
   useEffect(() => {
@@ -62,11 +63,7 @@ export function usePWAInstall() {
   }, [])
 
   const installApp = useCallback(async () => {
-    if (isIOS) {
-      setShowIOSModal(true)
-      return
-    }
-
+    // Priority 1: Use native browser prompt if available
     if (deferredPrompt) {
       await deferredPrompt.prompt()
       const { outcome } = await deferredPrompt.userChoice
@@ -74,7 +71,17 @@ export function usePWAInstall() {
         setIsInstalled(true)
       }
       setDeferredPrompt(null)
+      return
     }
+
+    // Priority 2: Show iOS-specific instructions
+    if (isIOS) {
+      setShowIOSModal(true)
+      return
+    }
+
+    // Priority 3: Show generic install instructions
+    setShowGenericModal(true)
   }, [isIOS, deferredPrompt])
 
   const dismissBanner = useCallback(() => {
@@ -82,7 +89,8 @@ export function usePWAInstall() {
     localStorage.setItem(DISMISS_KEY, new Date().toISOString())
   }, [])
 
-  const canInstall = !isInstalled && (!!deferredPrompt || isIOS)
+  // Always show if not installed — don't depend on beforeinstallprompt
+  const canInstall = !isInstalled
   const showBanner = canInstall && !bannerDismissed
 
   return {
@@ -92,6 +100,8 @@ export function usePWAInstall() {
     showBanner,
     showIOSModal,
     setShowIOSModal,
+    showGenericModal,
+    setShowGenericModal,
     installApp,
     dismissBanner,
   }
