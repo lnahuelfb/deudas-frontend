@@ -1,5 +1,12 @@
 # DeudApp - Frontend 💳✨
 
+> **DeudApp** is a debt and subscription tracker. Log credit cards, Mercado Pago and informal debts, then track purchases, installments, due dates and totals for each creditor.
+> This repo is the React front end. The API lives in [deudas](https://github.com/lnahuelfb/deudas).
+> Live demo: https://deudas-ashen.vercel.app
+> Stack: React 18, Vite, TypeScript, Tailwind CSS, TanStack Query, React Hook Form and Zod. Spanish documentation below.
+
+---
+
 Aplicación web moderna y dinámica para la gestión inteligente de finanzas personales, suscripciones y tarjetas de crédito. Diseñada con una estética oscura premium, animaciones fluidas e interfaz de usuario altamente optimizada.
 
 ## 🚀 Tecnologías Principales
